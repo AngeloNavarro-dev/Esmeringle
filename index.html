@@ -171,12 +171,6 @@
       transform: scale(1.2);
     }
 
-    .msg-group:hover .reaction-trigger,
-    .msg-group:focus-within .reaction-trigger {
-      opacity: 1;
-      visibility: visible;
-    }
-
     @keyframes pulse-record {
       0% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.15); opacity: 0.7; }
@@ -285,13 +279,13 @@
       
       <div class="text-center my-3 sm:my-4">
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rosebrand-500/10 border border-rosebrand-500/25 text-rosebrand-400 text-xs font-semibold mb-2">
-          <i class="fa-solid fa-user-check text-emerald-400"></i> 100% Real Humans!
+          <i class="fa-solid fa-user-check text-emerald-400"></i> 100% Real Humans & Verified Singles!
         </div>
         <h1 class="text-3xl sm:text-4xl font-black tracking-tight font-display">
           <span class="romantic-gradient-text">Spark A Real Connection</span> Tonight
         </h1>
         <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-          No automated AI bots or scripted chats. Meet authentic Filipino singles live for genuine kwentuhan, coffee dates, or late-night talks.
+          No automated AI bots or fake profiles. Guy and Girl profiles require a fast live selfie check for a safe and authentic community.
         </p>
       </div>
 
@@ -421,18 +415,33 @@
           </div>
         </div>
 
+        <!-- Gender Selection with Mandatory Selfie Verification Badge indicator -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span class="text-xs font-semibold text-slate-300 block mb-1.5">I am a:</span>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-semibold text-slate-300">I am a:</span>
+              <span class="text-[10px] text-amber-400/90 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Guy/Girl requires selfie
+              </span>
+            </div>
             <div class="grid grid-cols-3 gap-1.5">
-              <button type="button" onclick="selectGender('myGender', 'Male', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 active-dating-pill transition cursor-pointer">
-                <span>👦</span> Guy
+              <button type="button" id="genderBtnMale" onclick="selectGender('myGender', 'Male', this)" class="gender-btn myGender-opt relative py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex flex-col items-center justify-center gap-0.5 active-dating-pill transition cursor-pointer">
+                <div class="flex items-center gap-1">
+                  <span>👦</span> Guy
+                </div>
+                <span class="text-[9px] text-cyan-200/80 font-normal">Selfie Req</span>
               </button>
-              <button type="button" onclick="selectGender('myGender', 'Female', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
-                <span>👧</span> Girl
+              <button type="button" id="genderBtnFemale" onclick="selectGender('myGender', 'Female', this)" class="gender-btn myGender-opt relative py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex flex-col items-center justify-center gap-0.5 transition cursor-pointer">
+                <div class="flex items-center gap-1">
+                  <span>👧</span> Girl
+                </div>
+                <span class="text-[9px] text-cyan-200/80 font-normal">Selfie Req</span>
               </button>
-              <button type="button" onclick="selectGender('myGender', 'LGBTQ+', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
-                <span>🌈</span> Pride
+              <button type="button" id="genderBtnLgbtq" onclick="selectGender('myGender', 'LGBTQ+', this)" class="gender-btn myGender-opt relative py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex flex-col items-center justify-center gap-0.5 transition cursor-pointer">
+                <div class="flex items-center gap-1">
+                  <span>🌈</span> Pride
+                </div>
+                <span class="text-[9px] text-slate-400 font-normal">Inclusive</span>
               </button>
             </div>
           </div>
@@ -627,21 +636,17 @@
           </div>
         </div>
 
-        <!-- Controls: HEART (Want Match), DISLIKE/PASS (Don't Like Match), Voice, Video, Exit -->
+        <!-- Controls: HEART, DISLIKE/PASS, Voice, Video, Exit -->
         <div class="flex items-center gap-1.5 sm:gap-2">
-          
-          <!-- HEART BUTTON (You want your match -> Transfer to Inbox) -->
           <button onclick="keepAndTransferToInbox()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 via-heart-pink to-rosebrand-500 hover:from-rosebrand-500 hover:to-heart-pink text-white font-extrabold text-xs flex items-center gap-1.5 shadow-glow-heart active:scale-95 transition cursor-pointer" title="Keep Match & Move Conversation to Inbox">
             <i class="fa-solid fa-heart"></i>
             <span class="hidden sm:inline">Keep Match</span>
           </button>
 
-          <!-- DISLIKE / PASS BUTTON (You don't like match -> Next date) -->
           <button onclick="dislikeMatchPrompt()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-400 hover:text-amber-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Pass / Dislike Match (Find Next Date)">
             <i class="fa-solid fa-thumbs-down text-xs"></i>
           </button>
 
-          <!-- Swap Social Handles Button -->
           <button onclick="openHandleSwapModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-fuchsia-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Mutual IG/Telegram Reveal">
             <i class="fa-brands fa-instagram text-xs"></i>
           </button>
@@ -669,7 +674,6 @@
           <strong id="chemistryStatusText" class="text-rosebrand-300 font-bold">Getting to Know (Level 1)</strong>
         </span>
         <div class="flex items-center gap-2">
-          <!-- Tamagotchi Love Plant Widget -->
           <div id="lovePlantWidget" class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-bold cursor-pointer" onclick="showToast('Your shared Love Plant! It grows as you exchange kwentuhan 🌱')">
             <span id="lovePlantIcon">🌱</span>
             <span id="lovePlantStage" class="text-[9px]">Sprout</span>
@@ -806,9 +810,7 @@
           </div>
           <button onclick="toggleKiligGameTray()" class="text-slate-400 hover:text-white ml-2 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div id="gameDeckOptions" class="grid grid-cols-2 gap-2 text-xs">
-          <!-- Dynamically populated prompts -->
-        </div>
+        <div id="gameDeckOptions" class="grid grid-cols-2 gap-2 text-xs"></div>
       </div>
 
       <!-- Meme Picker Tray -->
@@ -848,7 +850,6 @@
           <button type="button" onclick="toggleMemePicker()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-400 hover:text-rosebrand-400 flex items-center justify-center transition cursor-pointer" title="Send a reaction card">
             <i class="fa-regular fa-image"></i>
           </button>
-          <!-- Kilig Dice Game Button -->
           <button type="button" onclick="toggleKiligGameTray()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-amber-400 hover:text-amber-300 flex items-center justify-center transition cursor-pointer" title="Games & Deep Talk Prompts">
             <i class="fa-solid fa-dice"></i>
           </button>
@@ -856,7 +857,6 @@
             <i class="fa-solid fa-heart"></i>
           </button>
 
-          <!-- Voice Note Button -->
           <button type="button" id="voiceRecordBtn" onclick="toggleVoiceRecording()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 flex items-center justify-center transition active:scale-95 cursor-pointer" title="Send Voice Memo">
             <i id="voiceRecordIcon" class="fa-solid fa-microphone text-sm"></i>
           </button>
@@ -1027,27 +1027,37 @@
 
   <!-- ================= LIVE SELFIE VERIFICATION MODAL ================= -->
   <div id="selfieModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-datingdark-900 border border-datingdark-border max-w-sm w-full rounded-3xl p-5 shadow-2xl relative text-center">
+    <div class="bg-datingdark-900 border border-cyan-500/50 max-w-sm w-full rounded-3xl p-5 sm:p-6 shadow-2xl relative text-center">
       <div class="flex items-center justify-between pb-3 border-b border-datingdark-border mb-3">
         <div class="flex items-center gap-1.5 text-cyan-400 font-bold text-sm">
           <i class="fa-solid fa-shield-halved"></i>
-          <span>Live Selfie Verification</span>
+          <span>Required Selfie Verification</span>
         </div>
         <button onclick="closeSelfieModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <p class="text-xs text-slate-300 mb-3 leading-relaxed">
-        Snap a real-time selfie directly from your device camera to get the verified live badge.
-      </p>
-
-      <div class="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden bg-black/60 border border-cyan-500/40 mb-3 flex items-center justify-center">
-        <video id="selfieVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
-        <canvas id="selfieCanvas" class="hidden"></canvas>
+      <div class="mb-3 px-3 py-2 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-left">
+        <p class="text-xs text-cyan-200 leading-relaxed font-medium">
+          <i class="fa-solid fa-circle-exclamation text-amber-400 mr-1"></i>
+          <strong>Anti-Catfishing Notice:</strong> Selecting <strong>Guy</strong> or <strong>Girl</strong> requires a quick live selfie snapshot before matching to guarantee authentic real humans.
+        </p>
       </div>
 
+      <div class="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden bg-black/60 border-2 border-cyan-500/50 mb-3 flex items-center justify-center shadow-inner">
+        <video id="selfieVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        <canvas id="selfieCanvas" class="hidden"></canvas>
+        <div class="absolute inset-0 border-2 border-cyan-400/30 rounded-2xl pointer-events-none"></div>
+      </div>
+
+      <p class="text-[11px] text-slate-400 mb-4">
+        Position your face in the frame and tap Snap & Verify.
+      </p>
+
       <div class="flex gap-2">
-        <button onclick="closeSelfieModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
-        <button onclick="captureLiveSelfie()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold text-xs shadow-md cursor-pointer">Snap & Verify</button>
+        <button onclick="closeSelfieModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-semibold text-xs transition cursor-pointer">Later</button>
+        <button onclick="captureLiveSelfie()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-white font-bold text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+          <i class="fa-solid fa-camera"></i> Snap & Verify
+        </button>
       </div>
     </div>
   </div>
@@ -1096,10 +1106,10 @@
         </button>
       </div>
       <div class="text-xs sm:text-sm text-slate-300 space-y-2.5 my-4 leading-relaxed">
-        <p><strong>1. Zero Bots Guarantee:</strong> Walang automated AI bots. Bawat kausap ay totoong tao.</p>
-        <p><strong>2. Heart to Keep in Inbox:</strong> Gusto mo ang date mo? Pindutin ang Heart button para ma-save ang convo sa iyong Inbox!</p>
-        <p><strong>3. Pass / Dislike:</strong> Kung hindi mo vibe, pindutin ang Thumbs Down / Pass button para mag-move on agad sa susunod na single.</p>
-        <p><strong>4. Cute Sparks:</strong> Palaguin ang inyong Love Plant, mag-bato bato pick, at magpadala ng Pinoy merienda treats!</p>
+        <p><strong>1. Mandatory Selfie Verification:</strong> Selecting Guy or Girl requires a real live selfie from your device camera so that catfishing is eliminated.</p>
+        <p><strong>2. Zero Bots Guarantee:</strong> Walang automated AI bots. Bawat kausap ay totoong tao sa Pilipinas o Global Pinoys.</p>
+        <p><strong>3. Heart to Keep in Inbox:</strong> Gusto mo ang date mo? Pindutin ang Heart button para ma-save ang convo sa iyong Inbox!</p>
+        <p><strong>4. Pass / Dislike:</strong> Kung hindi mo vibe, pindutin ang Thumbs Down / Pass button para mag-move on agad sa susunod na single.</p>
       </div>
       <button onclick="closeSafetyModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink font-bold text-xs sm:text-sm text-white transition shadow-glow-heart cursor-pointer">
         Naiintindihan ko (Got it!)
@@ -1132,7 +1142,7 @@
       onSnapshot, 
       collection, 
       query,
-      orderBy,
+      orderBy, 
       runTransaction 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -1248,7 +1258,7 @@
         }
         localStorage.setItem('esmeringle_uid', window.esmeringle.userId);
       } catch (authErr) {
-        console.warn("Auth token fallback to stored pseudo ID:", authErr);
+        console.warn("Auth fallback to stored pseudo ID:", authErr);
       }
 
       if (statusEl) {
@@ -1535,41 +1545,6 @@
         }
       });
       window.esmeringle.unsubs.push(unsubMyTicket);
-    }
-
-    async function toggleReaction(sessionId, msgId, emoji, isGroup = false) {
-      const { db, appId, userId } = window.esmeringle;
-      if (!db || !userId) return;
-      playBeep('click');
-      triggerHapticFeedback([20]);
-
-      const colPath = isGroup ? 'lounge_messages' : `chat_sessions/${sessionId}/messages`;
-      const msgRef = doc(db, 'artifacts', appId, 'public', 'data', ...colPath.split('/'), msgId);
-
-      try {
-        await runTransaction(db, async (transaction) => {
-          const docSnap = await transaction.get(msgRef);
-          if (!docSnap.exists()) return;
-          const data = docSnap.data();
-          const reactions = data.reactions || {};
-          const currentList = reactions[emoji] || [];
-
-          if (currentList.includes(userId)) {
-            const updated = currentList.filter(id => id !== userId);
-            if (updated.length > 0) {
-              reactions[emoji] = updated;
-            } else {
-              delete reactions[emoji];
-            }
-          } else {
-            reactions[emoji] = [...currentList, userId];
-          }
-
-          transaction.update(msgRef, { reactions: reactions });
-        });
-      } catch (err) {
-        console.warn("Failed to toggle reaction:", err);
-      }
     }
 
     async function setupLocalMedia(video = true, audio = true) {
@@ -1940,7 +1915,6 @@
     window.esmeringleRegisterPresence = registerUserPresence;
     window.esmeringleUnregisterPresence = unregisterUserPresence;
     window.esmeringleStartReactiveMatchmaking = startReactiveMatchmaking;
-    window.toggleReaction = toggleReaction;
     window.initiateCall = initiateCall;
     window.acceptIncomingCall = acceptIncomingCall;
     window.rejectIncomingCall = rejectIncomingCall;
@@ -2271,6 +2245,7 @@
       playBeep('click');
     }
 
+    /* Required Selfie Verification trigger on choosing Male or Female */
     function selectGender(field, value, btnElem) {
       window.esmeringle[field] = value;
       playBeep('click');
@@ -2281,6 +2256,16 @@
       });
       btnElem.classList.add('active-dating-pill');
       btnElem.classList.remove('border-datingdark-border', 'bg-datingdark-900/60');
+
+      // Check if user is choosing Guy (Male) or Girl (Female) and not yet verified
+      if (field === 'myGender' && (value === 'Male' || value === 'Female')) {
+        if (!window.esmeringle.isSelfieVerified) {
+          showToast(`📸 Selfie Verification Required for ${value === 'Male' ? 'Guy 👦' : 'Girl 👧'}!`);
+          setTimeout(() => {
+            openSelfieVerificationModal();
+          }, 350);
+        }
+      }
     }
 
     function setMode(mode) {
@@ -2390,6 +2375,15 @@
       if (error) {
         showToast(error);
         nickInput.focus();
+        return;
+      }
+
+      // MANDATORY VERIFICATION ENFORCEMENT FOR GUY / GIRL PROFILES
+      const isGuyOrGirl = (window.esmeringle.myGender === 'Male' || window.esmeringle.myGender === 'Female');
+      if (isGuyOrGirl && !window.esmeringle.isSelfieVerified) {
+        triggerHapticFeedback([100, 50, 100]);
+        showToast('Selfie verification is required for Guy / Girl profiles before matching!');
+        openSelfieVerificationModal();
         return;
       }
 
@@ -3353,6 +3347,7 @@
       }
     }
 
+    /* Live Selfie Modal Control & Snap capture */
     async function openSelfieVerificationModal() {
       playBeep('click');
       const modal = document.getElementById('selfieModal');
@@ -3368,7 +3363,7 @@
         window.esmeringle.selfieStream = stream;
         video.srcObject = stream;
       } catch (e) {
-        showToast('Camera access denied for verification.');
+        showToast('Camera access required for live verification.');
         closeSelfieModal();
       }
     }
@@ -3399,13 +3394,20 @@
       closeSelfieModal();
       showToast('Verified Live Human badge unlocked! 📸');
       triggerHapticFeedback([40, 80]);
+
+      // Re-register presence with verified badge
+      if (window.esmeringleRegisterPresence) {
+        window.esmeringleRegisterPresence();
+      }
     }
 
     function updateVerificationBadgeUI() {
       const setupBadge = document.getElementById('verifyBadgeSetup');
       const chatShield = document.getElementById('strangerVerifiedShield');
       if (window.esmeringle.isSelfieVerified) {
-        if (setupBadge) setupBadge.innerHTML = '<span class="text-cyan-300 font-bold">Verified 100% Live ✓</span>';
+        if (setupBadge) setupBadge.innerHTML = '<span class="text-cyan-300 font-bold"><i class="fa-solid fa-circle-check mr-1 text-cyan-400"></i>Verified 100% Live ✓</span>';
+      } else {
+        if (setupBadge) setupBadge.innerHTML = 'Verify Selfie 📸';
       }
       if (window.esmeringle.currentPartner?.verified && chatShield) {
         chatShield.classList.remove('hidden');
