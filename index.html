@@ -161,11 +161,19 @@
       transform: scale(1.2);
     }
 
-    /* Reaction hover pill */
     .msg-group:hover .reaction-trigger,
     .msg-group:focus-within .reaction-trigger {
       opacity: 1;
       visibility: visible;
+    }
+
+    @keyframes pulse-record {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-recording {
+      animation: pulse-record 1s infinite ease-in-out;
     }
   </style>
 </head>
@@ -211,6 +219,13 @@
           <span class="text-slate-400 font-normal hidden sm:inline">humans online</span>
         </div>
 
+        <!-- Inbox Button -->
+        <button id="inboxNavBtn" onclick="openInboxModal()" class="relative px-3 h-9 rounded-xl bg-datingdark-800 border border-datingdark-border flex items-center gap-1.5 text-slate-300 hover:text-rosebrand-400 hover:border-rosebrand-500 transition shadow-inner" title="Your Liked Matches & Inbox">
+          <i class="fa-solid fa-inbox text-xs"></i>
+          <span class="text-[11px] font-semibold hidden md:inline">Inbox</span>
+          <span id="inboxCountBadge" class="hidden absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-rosebrand-600 text-white font-black text-[9px] shadow-sm">0</span>
+        </button>
+
         <button id="loverMusicBtn" onclick="toggleLoversMusic()" class="px-2.5 h-9 rounded-xl bg-datingdark-800 border border-datingdark-border flex items-center gap-1.5 text-slate-300 hover:text-rosebrand-400 hover:border-rosebrand-500 transition shadow-inner" title="Toggle Music for Lovers">
           <i id="loverMusicIcon" class="fa-solid fa-music text-xs"></i>
           <span id="loverMusicLabel" class="text-[11px] font-semibold hidden md:inline">Lovers Music</span>
@@ -240,10 +255,10 @@
     </div>
   </header>
 
-  <!-- Reconnect Banner (when auto-reconnected) -->
+  <!-- Reconnect Banner -->
   <div id="reconnectBanner" class="bg-emerald-600/25 border-b border-emerald-500/40 text-[11px] text-emerald-200 py-1.5 px-4 text-center flex items-center justify-center gap-2 hidden">
     <i class="fa-solid fa-plug-circle-check text-emerald-400 animate-pulse"></i>
-    <span>Reconnected to your ongoing date smoothly!</span>
+    <span>Reconnected to your chat session!</span>
   </div>
 
   <!-- Connection Status Banner -->
@@ -268,6 +283,31 @@
         <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
           No automated AI bots or scripted chats. Meet authentic Filipino singles live for genuine kwentuhan, coffee dates, or late-night talks.
         </p>
+      </div>
+
+      <!-- RECENT MATCH RECONNECT CARD -->
+      <div id="recentMatchBox" class="w-full mb-3.5 glass-dating border border-rosebrand-500/40 rounded-2xl p-3 sm:p-3.5 hidden items-center justify-between shadow-glow-heart">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rosebrand-500 to-heart-fuchsia flex items-center justify-center text-white font-bold text-sm shadow">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div class="text-left">
+            <div class="text-xs font-bold text-slate-100 flex items-center gap-1.5">
+              <span>Recent Match:</span>
+              <span id="recentMatchName" class="text-rosebrand-400 font-extrabold">Your Date</span>
+            </div>
+            <p id="recentMatchDetail" class="text-[10px] text-slate-400">Chat kept open • Reconnect anytime</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="reconnectRecentMatch()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition cursor-pointer">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Reconnect</span>
+          </button>
+          <button onclick="clearRecentMatch()" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs" title="Dismiss recent match">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Mode Selector -->
@@ -297,11 +337,17 @@
           <input 
             id="nicknameInput" 
             type="text" 
-            maxlength="20"
+            maxlength="20" 
             placeholder="e.g. Aly, Carlo, Nicole, BGCboy, ManilaGirl..." 
             class="w-full bg-datingdark-900/90 border border-datingdark-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rosebrand-500 focus:ring-1 focus:ring-rosebrand-500 transition"
           >
-          <p id="nicknameNotice" class="text-[11px] text-slate-500 mt-1">Must be 3-20 characters with readable letters.</p>
+          <div class="flex items-center justify-between mt-1">
+            <p id="nicknameNotice" class="text-[11px] text-slate-500">Must be 3-20 characters with readable letters.</p>
+            <button type="button" onclick="openSelfieVerificationModal()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold">
+              <i class="fa-solid fa-shield-halved text-xs"></i>
+              <span id="verifyBadgeSetup">Verify Selfie 📸</span>
+            </button>
+          </div>
         </div>
 
         <div>
@@ -450,6 +496,64 @@
       
       <div id="floatingHeartsContainer" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
 
+      <!-- Video / Audio Call View Overlay -->
+      <div id="callOverlay" class="absolute inset-0 z-30 bg-datingdark-950/95 backdrop-blur-md hidden flex-col items-center justify-between p-4">
+        <div class="w-full flex items-center justify-between px-2 pt-1 text-slate-300 text-xs">
+          <span id="callPartnerLabel" class="font-bold flex items-center gap-2 text-rosebrand-400">
+            <i class="fa-solid fa-video animate-pulse"></i> Live Dating Call
+          </span>
+          <span id="callDuration" class="font-mono bg-datingdark-900 px-2.5 py-1 rounded-full border border-datingdark-border">00:00</span>
+        </div>
+
+        <div class="relative w-full flex-1 my-3 bg-black/60 rounded-2xl overflow-hidden border border-datingdark-border flex items-center justify-center">
+          <video id="remoteVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+          
+          <div id="voiceOnlyPlaceholder" class="hidden flex-col items-center justify-center gap-2">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-rosebrand-600 to-heart-pink flex items-center justify-center text-3xl text-white shadow-glow-heart animate-pulse">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <span class="text-sm font-bold text-slate-200">Voice Call in Progress</span>
+          </div>
+
+          <div id="localVideoContainer" class="absolute bottom-3 right-3 w-28 h-40 bg-datingdark-900 rounded-xl overflow-hidden border-2 border-rosebrand-500/60 shadow-2xl">
+            <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="toggleMicBtn" onclick="toggleAudioTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90" title="Mute/Unmute Mic">
+            <i id="micIcon" class="fa-solid fa-microphone"></i>
+          </button>
+          <button id="toggleCamBtn" onclick="toggleVideoTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90" title="Turn Camera On/Off">
+            <i id="camIcon" class="fa-solid fa-video"></i>
+          </button>
+          <button onclick="hangUpCall()" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition active:scale-90 shadow-glow-pink" title="End Call">
+            <i class="fa-solid fa-phone-slash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Incoming Call Dialog Banner -->
+      <div id="incomingCallBanner" class="absolute top-14 inset-x-4 z-40 bg-datingdark-900/95 border-2 border-rosebrand-500/80 rounded-2xl p-3.5 shadow-2xl hidden items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rosebrand-600 to-heart-pink flex items-center justify-center text-white text-base animate-pulse">
+            <i class="fa-solid fa-phone-volume"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-white"><span id="incomingCallerName">Match</span> is calling you...</h4>
+            <span id="incomingCallType" class="text-[10px] text-rosebrand-300">Video Call</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="rejectIncomingCall()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 text-xs font-semibold border border-datingdark-border">
+            Decline
+          </button>
+          <button onclick="acceptIncomingCall()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold shadow-lg flex items-center gap-1.5">
+            <i class="fa-solid fa-phone"></i> Answer
+          </button>
+        </div>
+      </div>
+
       <!-- Chat Header -->
       <div class="px-4 py-3 bg-datingdark-900/90 border-b border-datingdark-border flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -465,6 +569,9 @@
               <span id="strangerTagPill" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-semibold flex items-center gap-1">
                 <i class="fa-solid fa-user-check text-[9px]"></i> 100% Real Human
               </span>
+              <span id="strangerVerifiedShield" class="hidden text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30 font-semibold items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-[9px]"></i> Verified Live
+              </span>
             </div>
             <div id="strangerStatusText" class="text-[11px] text-rosebrand-400 flex items-center gap-1 font-medium">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Live 1-on-1 Blind Date
@@ -472,20 +579,49 @@
           </div>
         </div>
 
-        <!-- Controls -->
-        <div class="flex items-center gap-2">
+        <!-- Controls: HEART (Want Match), DISLIKE/PASS (Don't Like Match), Voice, Video, Exit -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          
+          <!-- HEART BUTTON (You want your match -> Transfer to Inbox) -->
+          <button onclick="keepAndTransferToInbox()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 via-heart-pink to-rosebrand-500 hover:from-rosebrand-500 hover:to-heart-pink text-white font-extrabold text-xs flex items-center gap-1.5 shadow-glow-heart active:scale-95 transition" title="Keep Match & Move Conversation to Inbox">
+            <i class="fa-solid fa-heart"></i>
+            <span class="hidden sm:inline">Keep Match</span>
+          </button>
+
+          <!-- DISLIKE / PASS BUTTON (You don't like match -> Next date) -->
+          <button onclick="dislikeMatchPrompt()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-400 hover:text-amber-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Pass / Dislike Match (Find Next Date)">
+            <i class="fa-solid fa-thumbs-down text-xs"></i>
+          </button>
+
+          <!-- Swap Social Handles Button -->
+          <button onclick="openHandleSwapModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-fuchsia-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Mutual IG/Telegram Reveal">
+            <i class="fa-brands fa-instagram text-xs"></i>
+          </button>
+
+          <button onclick="initiateCall(false)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Start Voice Call">
+            <i class="fa-solid fa-phone text-xs"></i>
+          </button>
+          <button onclick="initiateCall(true)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Start Video Call">
+            <i class="fa-solid fa-video text-xs"></i>
+          </button>
           <button onclick="sendHeartSpark(event)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Send a heart flutter">
             <i class="fa-solid fa-heart text-sm animate-pulse"></i>
           </button>
-          <button onclick="nextPartnerPrompt()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-xs font-bold text-rosebrand-400 border border-rosebrand-500/30 flex items-center gap-1.5 transition" title="Match with next single">
-            <i class="fa-solid fa-forward-step"></i>
-            <span>Next</span>
-          </button>
-          <!-- Prompts Exit Confirmation Modal -->
           <button onclick="openConfirmExitModal()" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs font-bold text-rose-400 border border-rose-500/30 flex items-center gap-1.5 transition cursor-pointer" title="Leave Date">
             <i class="fa-solid fa-door-open"></i>
             <span class="hidden sm:inline">Exit</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Progressive Connection / Kilig Progress Meter -->
+      <div class="px-4 py-1.5 bg-datingdark-900/60 border-b border-datingdark-border flex items-center justify-between text-[10px]">
+        <span class="text-slate-400 flex items-center gap-1">
+          <i class="fa-solid fa-fire-flame-curved text-rosebrand-400"></i> Spark Meter:
+          <strong id="chemistryStatusText" class="text-rosebrand-300 font-bold">Getting to Know (Level 1)</strong>
+        </span>
+        <div class="w-24 bg-datingdark-800 h-1.5 rounded-full overflow-hidden border border-datingdark-border">
+          <div id="chemistryProgressBar" class="h-full bg-gradient-to-r from-rosebrand-500 to-heart-pink transition-all duration-300" style="width: 15%;"></div>
         </div>
       </div>
 
@@ -494,6 +630,9 @@
         <span class="text-rosebrand-300 flex items-center gap-1 whitespace-nowrap pl-1 font-semibold">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Kilig Starters:
         </span>
+        <button onclick="openDateSpotsModal()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:border-amber-400 font-bold transition flex items-center gap-1">
+          <i class="fa-solid fa-mug-hot"></i> Coffee Date?
+        </button>
         <button onclick="sendIcebreaker('Coffee date or late night drive? ☕🚗')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">Coffee or Night Drive?</button>
         <button onclick="sendIcebreaker('Ano love language mo lods? ✨')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">Love language?</button>
         <button onclick="sendIcebreaker('ASL and location sa Pinas? 👋')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">ASL please?</button>
@@ -502,15 +641,23 @@
       <!-- Messages Box -->
       <div id="chatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3"></div>
 
-      <!-- Partner Left Notice -->
-      <div id="strangerLeftNotice" class="hidden px-4 py-2 bg-rose-950/70 border-t border-rose-800/40 flex items-center justify-between text-xs text-rose-200">
+      <!-- Partner Left Notice with Reconnect Option -->
+      <div id="strangerLeftNotice" class="hidden px-4 py-2 bg-rose-950/70 border-t border-rose-800/40 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-rose-200">
         <div class="flex items-center gap-1.5">
           <i class="fa-solid fa-heart-crack text-rose-400"></i>
-          <span>Your date left or disconnected. Ready to meet another real single?</span>
+          <span>Partner disconnected. Click Reconnect or Save to Inbox!</span>
         </div>
-        <button onclick="nextPartnerPrompt()" class="px-3 py-1 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink text-white font-bold text-xs transition shadow-glow-heart">
-          Find Next Date
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="keepAndTransferToInbox()" class="px-3 py-1 rounded-xl bg-rosebrand-600 hover:bg-rosebrand-500 text-white font-bold text-xs transition flex items-center gap-1">
+            <i class="fa-solid fa-heart"></i> Move to Inbox
+          </button>
+          <button onclick="reconnectRecentMatch()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-rosebrand-300 border border-rosebrand-500/40 font-bold text-xs transition flex items-center gap-1">
+            <i class="fa-solid fa-rotate-right"></i> Reconnect
+          </button>
+          <button onclick="nextPartnerPrompt()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs transition">
+            Next Date
+          </button>
+        </div>
       </div>
 
       <!-- Typing Indicator -->
@@ -523,6 +670,15 @@
         <span id="typingName">Your match is typing...</span>
       </div>
 
+      <!-- Audio Recording Banner -->
+      <div id="voiceRecordingStatus" class="hidden px-4 py-2 bg-rosebrand-950/80 border-t border-rosebrand-800/40 items-center justify-between text-xs text-rose-200">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rosebrand-500 animate-recording"></span>
+          <span>Recording Voice Note... (<span id="voiceRecordTimer">0s</span>)</span>
+        </div>
+        <button onclick="cancelVoiceRecording()" class="text-slate-400 hover:text-white text-xs underline">Cancel</button>
+      </div>
+
       <!-- Pending Image Upload Preview Bar -->
       <div id="imagePreviewContainer" class="hidden px-4 py-2 bg-datingdark-850 border-t border-datingdark-border items-center gap-3">
         <div class="relative inline-block">
@@ -531,7 +687,28 @@
             &times;
           </button>
         </div>
-        <span class="text-xs text-slate-300">Ready to send photo from device</span>
+        <div class="flex items-center gap-2 text-xs">
+          <button type="button" id="viewOnceToggleBtn" onclick="toggleViewOnceState()" class="px-2.5 py-1 rounded-lg border border-datingdark-border bg-datingdark-900 text-slate-300 text-[11px] font-semibold flex items-center gap-1 hover:border-rosebrand-500">
+            <i class="fa-regular fa-eye text-xs"></i>
+            <span id="viewOnceStatusLabel">View-Once: OFF</span>
+          </button>
+          <span class="text-[11px] text-slate-400">Photo ready to send</span>
+        </div>
+      </div>
+
+      <!-- Categorized Mini-Games & Deep Talk Tray -->
+      <div id="kiligGameTray" class="hidden p-3 bg-datingdark-900 border-t border-datingdark-border flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            <button onclick="renderGameCategory('thisorthat')" id="tab-thisorthat" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">This or That</button>
+            <button onclick="renderGameCategory('ligaw')" id="tab-ligaw" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white">Ligaw & Kilig</button>
+            <button onclick="renderGameCategory('deeptalk')" id="tab-deeptalk" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white">Late Night Usap</button>
+          </div>
+          <button onclick="toggleKiligGameTray()" class="text-slate-400 hover:text-white ml-2"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="gameDeckOptions" class="grid grid-cols-2 gap-2 text-xs">
+          <!-- Dynamically populated prompts -->
+        </div>
       </div>
 
       <!-- Meme Picker Tray -->
@@ -562,24 +739,26 @@
 
       <!-- Chat Bottom Input Bar -->
       <div class="p-3 bg-datingdark-900 border-t border-datingdark-border">
-        <!-- Hidden file input for uploading from device -->
         <input type="file" id="deviceImageInput" accept="image/*" class="hidden" onchange="handleDeviceImageSelect(event)">
 
         <form id="chatForm" onsubmit="handleSend1on1(event)" class="flex items-center gap-2">
-          
-          <!-- Image upload from device button -->
           <button type="button" onclick="document.getElementById('deviceImageInput').click()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 hover:border-rosebrand-500/50 flex items-center justify-center transition active:scale-95 cursor-pointer" title="Upload Photo from Device">
             <i class="fa-solid fa-camera text-sm"></i>
           </button>
-
-          <!-- Meme button -->
           <button type="button" onclick="toggleMemePicker()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-400 hover:text-rosebrand-400 flex items-center justify-center transition cursor-pointer" title="Send a reaction card">
             <i class="fa-regular fa-image"></i>
           </button>
-
-          <!-- Heart button -->
+          <!-- Kilig Dice Game Button -->
+          <button type="button" onclick="toggleKiligGameTray()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-amber-400 hover:text-amber-300 flex items-center justify-center transition cursor-pointer" title="Games & Deep Talk Prompts">
+            <i class="fa-solid fa-dice"></i>
+          </button>
           <button type="button" onclick="sendHeartEmojiQuick()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-rosebrand-400 hover:text-rosebrand-300 flex items-center justify-center transition cursor-pointer" title="Send quick heart">
             <i class="fa-solid fa-heart"></i>
+          </button>
+
+          <!-- Voice Note Button -->
+          <button type="button" id="voiceRecordBtn" onclick="toggleVoiceRecording()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 flex items-center justify-center transition active:scale-95 cursor-pointer" title="Send Voice Memo">
+            <i id="voiceRecordIcon" class="fa-solid fa-microphone text-sm"></i>
           </button>
 
           <input 
@@ -625,15 +804,14 @@
           </div>
         </div>
 
-        <button onclick="switchToSetup()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-xs font-semibold text-slate-300 border border-datingdark-border flex items-center gap-1.5 transition">
-          <i class="fa-solid fa-arrow-left"></i>
-          <span>Lobby</span>
+        <button onclick="leaveGroupLounge()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-xs font-semibold text-slate-300 border border-datingdark-border flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-door-open"></i>
+          <span>Exit Lounge</span>
         </button>
       </div>
 
       <div id="groupMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3"></div>
 
-      <!-- Pending Group Image Preview -->
       <div id="groupImagePreviewContainer" class="hidden px-4 py-2 bg-datingdark-850 border-t border-datingdark-border items-center gap-3">
         <div class="relative inline-block">
           <img id="groupImagePreviewImg" class="w-14 h-14 object-cover rounded-xl border border-heart-pink/40" src="" alt="preview">
@@ -671,6 +849,115 @@
 
   </main>
 
+  <!-- ================= INBOX / SAVED MATCHES MODAL ================= -->
+  <div id="inboxModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-datingdark-900 border border-datingdark-border max-w-lg w-full rounded-3xl p-5 sm:p-6 shadow-2xl relative flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-datingdark-border">
+        <div class="flex items-center gap-2 text-rosebrand-400 font-bold text-base">
+          <i class="fa-solid fa-heart-circle-check"></i>
+          <span>Your Matches & Inbox</span>
+        </div>
+        <button onclick="closeInboxModal()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div id="inboxList" class="flex-1 overflow-y-auto space-y-3 my-4 pr-1">
+        <!-- Dynamically injected inbox items -->
+      </div>
+
+      <button onclick="closeInboxModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs sm:text-sm transition">
+        Close Inbox
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MUTUAL SOCIAL HANDLE SWAP MODAL ================= -->
+  <div id="handleSwapModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-datingdark-900 border border-datingdark-border max-w-md w-full rounded-3xl p-5 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-datingdark-border">
+        <div class="flex items-center gap-2 text-fuchsia-400 font-bold text-base">
+          <i class="fa-brands fa-instagram"></i>
+          <span>Mutual Social Handle Reveal</span>
+        </div>
+        <button onclick="closeHandleSwapModal()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300 my-3 leading-relaxed">
+        Zero pressure! Both of you must enter a handle before either person's handle is revealed.
+      </p>
+
+      <div id="handleSwapDisplay" class="space-y-3 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Your Instagram or Telegram (@username):</label>
+          <input id="mySocialHandleInput" type="text" placeholder="@yourhandle" class="w-full bg-datingdark-850 border border-datingdark-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-fuchsia-500">
+        </div>
+        <div id="partnerHandleBox" class="p-3 bg-datingdark-800 rounded-xl border border-datingdark-border text-xs text-slate-300 hidden">
+          <!-- Shown when mutual reveal occurs -->
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="closeHandleSwapModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Cancel</button>
+        <button onclick="submitSocialHandle()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rosebrand-500 text-white font-bold text-xs shadow-md">Submit Handle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DATE SPOT SUGGESTER MODAL ================= -->
+  <div id="dateSpotsModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-datingdark-900 border border-datingdark-border max-w-md w-full rounded-3xl p-5 shadow-2xl relative flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-datingdark-border">
+        <div class="flex items-center gap-2 text-amber-400 font-bold text-base">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>Safe Public Meetup Spots</span>
+        </div>
+        <button onclick="closeDateSpotsModal()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400 my-3">
+        Recommended safe spots based on location: <strong id="dateSpotsLocationLabel" class="text-amber-300">PH</strong>
+      </p>
+
+      <div id="dateSpotsList" class="flex-1 overflow-y-auto space-y-2 mb-4">
+        <!-- Injected date spots -->
+      </div>
+
+      <button onclick="closeDateSpotsModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Close</button>
+    </div>
+  </div>
+
+  <!-- ================= LIVE SELFIE VERIFICATION MODAL ================= -->
+  <div id="selfieModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-datingdark-900 border border-datingdark-border max-w-sm w-full rounded-3xl p-5 shadow-2xl relative text-center">
+      <div class="flex items-center justify-between pb-3 border-b border-datingdark-border mb-3">
+        <div class="flex items-center gap-1.5 text-cyan-400 font-bold text-sm">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Live Selfie Verification</span>
+        </div>
+        <button onclick="closeSelfieModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+        Snap a real-time selfie directly from your device camera to get the verified live badge.
+      </p>
+
+      <div class="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden bg-black/60 border border-cyan-500/40 mb-3 flex items-center justify-center">
+        <video id="selfieVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        <canvas id="selfieCanvas" class="hidden"></canvas>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="closeSelfieModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Cancel</button>
+        <button onclick="captureLiveSelfie()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold text-xs shadow-md">Snap & Verify</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= COURTESY FOOTER ================= -->
   <footer class="w-full border-t border-datingdark-border/80 bg-datingdark-900/60 backdrop-blur-md py-3 px-4 text-center text-xs text-slate-400">
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1.5">
@@ -685,18 +972,18 @@
   <div id="confirmExitModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-datingdark-900 border border-rosebrand-500/30 max-w-sm w-full rounded-3xl p-5 sm:p-6 shadow-2xl relative text-center">
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 text-2xl shadow-inner">
-        <i class="fa-solid fa-heart-crack animate-pulse"></i>
+        <i class="fa-solid fa-door-open"></i>
       </div>
-      <h3 class="text-base sm:text-lg font-bold text-white font-display mb-1">Exit this chat?</h3>
+      <h3 class="text-base sm:text-lg font-bold text-white font-display mb-1">Leave to Lobby?</h3>
       <p class="text-xs text-slate-300 leading-relaxed mb-5">
-        Are you sure you want to leave? If you exit, this chat will end permanently and <strong>you won't be reconnected</strong>.
+        You can return to the lobby without losing your date. Your chat room stays ready and you can reconnect anytime!
       </p>
       <div class="flex gap-2.5">
         <button type="button" onclick="confirmExitNo()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 border border-datingdark-border text-slate-200 text-xs sm:text-sm font-semibold transition cursor-pointer">
-          No, Stay
+          Stay in Chat
         </button>
         <button type="button" onclick="confirmExitYes()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-rose-700 hover:from-rosebrand-500 hover:to-rose-600 text-white text-xs sm:text-sm font-bold shadow-glow-heart transition active:scale-95 cursor-pointer">
-          Yes, Exit
+          Go to Lobby
         </button>
       </div>
     </div>
@@ -716,9 +1003,9 @@
       </div>
       <div class="text-xs sm:text-sm text-slate-300 space-y-2.5 my-4 leading-relaxed">
         <p><strong>1. Zero Bots Guarantee:</strong> Walang automated AI bots. Bawat kausap ay totoong tao.</p>
-        <p><strong>2. Mutual Respect:</strong> Walang harassment o unsolicited sexual messages.</p>
-        <p><strong>3. Auto Reconnect Feature:</strong> Kung aksidenteng naisara o na-refresh ang browser, babalik ka sa same chat basta hindi pinindot ang Exit button!</p>
-        <p><strong>4. Ephemeral Chats:</strong> Kapag kinumpirma ang Exit, permanenteng mabubura at matatapos ang date.</p>
+        <p><strong>2. Heart to Keep in Inbox:</strong> Gusto mo ang date mo? Pindutin ang Heart button para ma-save ang convo sa iyong Inbox!</p>
+        <p><strong>3. Pass / Dislike:</strong> Kung hindi mo vibe, pindutin ang Thumbs Down / Pass button para mag-move on agad sa susunod na single.</p>
+        <p><strong>4. Privacy & Date Spots:</strong> Gamitin ang View-Once photos, Swap IG handles nang patas, at suriin ang ligtas na date spots!</p>
       </div>
       <button onclick="closeSafetyModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink font-bold text-xs sm:text-sm text-white transition shadow-glow-heart">
         Naiintindihan ko (Got it!)
@@ -732,7 +1019,7 @@
     <span id="toastMsg">Notification message</span>
   </div>
 
-  <!-- ================= FIREBASE CLOUD REAL-TIME ENGINE ================= -->
+  <!-- ================= FIREBASE CLOUD REAL-TIME ENGINE & WEBRTC ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { 
@@ -753,7 +1040,6 @@
       runTransaction 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Recover or generate persistent user ID across browser closes
     let storedUserId = localStorage.getItem('esmeringle_uid');
     if (!storedUserId) {
       storedUserId = 'human_' + Math.random().toString(36).substring(2, 10);
@@ -787,7 +1073,28 @@
       isPairing: false,
       activeHumans: new Set(),
       pendingImageBase64: null,
-      groupPendingImageBase64: null
+      groupPendingImageBase64: null,
+      msgCount: 0,
+      // View-Once state
+      isViewOncePending: false,
+      // Verification state
+      isSelfieVerified: localStorage.getItem('esmeringle_verified') === 'true',
+      selfieStream: null,
+      // Voice recording state
+      mediaRecorder: null,
+      audioChunks: [],
+      isRecordingVoice: false,
+      recordStartTime: 0,
+      recordTimerInterval: null,
+      // WebRTC State
+      peerConnection: null,
+      localStream: null,
+      remoteStream: null,
+      callUnsubs: [],
+      currentCallId: null,
+      incomingCallData: null,
+      callTimer: null,
+      callDurationSec: 0
     };
 
     let firebaseConfig = {
@@ -822,6 +1129,13 @@
       console.error("Firebase init failed:", err);
     }
 
+    const rtcConfig = {
+      iceServers: [
+        { urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }
+      ],
+      iceCandidatePoolSize: 10
+    };
+
     async function initUserAuth() {
       const statusEl = document.getElementById('syncStatusBar');
       const textEl = document.getElementById('syncStatusText');
@@ -850,9 +1164,11 @@
       registerUserPresence();
       listenToLiveCounters();
       checkForReconnectSession();
+      renderRecentMatchBox();
+      updateInboxCountBadge();
+      updateVerificationBadgeUI();
     }
 
-    // CHECK & RESTORE PREVIOUS CHAT SESSION IF ACCIDENTALLY CLOSED
     async function checkForReconnectSession() {
       try {
         const savedSessionRaw = localStorage.getItem('esmeringle_active_session');
@@ -866,37 +1182,32 @@
 
         if (sSnap.exists()) {
           const sData = sSnap.data();
-          if (sData.status === 'active') {
-            const partnerInfo = {
-              userId: (sData.user1 === window.esmeringle.userId ? sData.user2 : sData.user1) || 'Date',
-              name: (sData.user1 === window.esmeringle.userId ? sData.user2Name : sData.user1Name) || 'Date',
-              gender: (sData.user1 === window.esmeringle.userId ? sData.user2Gender : sData.user1Gender) || 'Pinoy',
-              intent: (sData.user1 === window.esmeringle.userId ? sData.user2Intent : sData.user1Intent) || 'Dating',
-              location: (sData.user1 === window.esmeringle.userId ? sData.user2Location : sData.user1Location) || 'PH'
-            };
+          const partnerInfo = {
+            userId: (sData.user1 === window.esmeringle.userId ? sData.user2 : sData.user1) || sessionMeta.partner?.userId || 'Date',
+            name: (sData.user1 === window.esmeringle.userId ? sData.user2Name : sData.user1Name) || sessionMeta.partner?.name || 'Date',
+            gender: (sData.user1 === window.esmeringle.userId ? sData.user2Gender : sData.user1Gender) || sessionMeta.partner?.gender || 'Pinoy',
+            intent: (sData.user1 === window.esmeringle.userId ? sData.user2Intent : sData.user1Intent) || sessionMeta.partner?.intent || 'Dating',
+            location: (sData.user1 === window.esmeringle.userId ? sData.user2Location : sData.user1Location) || sessionMeta.partner?.location || 'PH',
+            verified: (sData.user1 === window.esmeringle.userId ? sData.user2Verified : sData.user1Verified) || false
+          };
 
-            const myNick = (sData.user1 === window.esmeringle.userId ? sData.user1Name : sData.user2Name) || 'Real Single';
-            window.esmeringle.myNickname = myNick;
-            const nickInput = document.getElementById('nicknameInput');
-            if (nickInput) nickInput.value = myNick;
+          const myNick = (sData.user1 === window.esmeringle.userId ? sData.user1Name : sData.user2Name) || window.esmeringle.myNickname || 'Real Single';
+          window.esmeringle.myNickname = myNick;
+          const nickInput = document.getElementById('nicknameInput');
+          if (nickInput) nickInput.value = myNick;
 
-            // Reconnect
-            joinChatSession(sessionMeta.sessionId, partnerInfo);
+          await updateDoc(sessionRef, { status: 'active' });
+          joinChatSession(sessionMeta.sessionId, partnerInfo);
 
-            const recBanner = document.getElementById('reconnectBanner');
-            if (recBanner) {
-              recBanner.classList.remove('hidden');
-              setTimeout(() => recBanner.classList.add('hidden'), 4000);
-            }
-            showToast('Reconnected to your active date! 💖');
-          } else {
-            localStorage.removeItem('esmeringle_active_session');
+          const recBanner = document.getElementById('reconnectBanner');
+          if (recBanner) {
+            recBanner.classList.remove('hidden');
+            setTimeout(() => recBanner.classList.add('hidden'), 3500);
           }
-        } else {
-          localStorage.removeItem('esmeringle_active_session');
+          showToast('Reconnected to your chat session! 💖');
         }
       } catch (e) {
-        console.warn("Reconnect check failed:", e);
+        console.warn("Reconnect check:", e);
       }
     }
 
@@ -916,6 +1227,7 @@
           userId: window.esmeringle.userId,
           name: window.esmeringle.myNickname || 'Real Single',
           isHuman: true,
+          isVerified: window.esmeringle.isSelfieVerified,
           lastActive: Date.now()
         }, { merge: true });
 
@@ -985,7 +1297,7 @@
     }
 
     async function startReactiveMatchmaking() {
-      const { db, appId, userId, myNickname, myGender, targetGender, intent, location, tags } = window.esmeringle;
+      const { db, appId, userId, myNickname, myGender, targetGender, intent, location, tags, isSelfieVerified } = window.esmeringle;
       if (!db || !userId) {
         if (typeof showToast === 'function') showToast('Connecting to network, please retry in a moment...');
         return;
@@ -1005,6 +1317,7 @@
         location: location,
         tags: tags || [],
         isHuman: true,
+        isVerified: isSelfieVerified || false,
         status: 'waiting',
         timestamp: Date.now()
       });
@@ -1050,7 +1363,7 @@
 
               if (
                 partnerDoc.exists() && 
-                partnerDoc.data().status === 'waiting' &&
+                partnerDoc.data().status === 'waiting' && 
                 myDoc.exists() && 
                 myDoc.data().status === 'waiting'
               ) {
@@ -1060,14 +1373,17 @@
                   user1Gender: targetCandidate.gender || 'Pinoy',
                   user1Intent: targetCandidate.intent || 'Casual',
                   user1Location: targetCandidate.location || 'PH',
+                  user1Verified: targetCandidate.isVerified || false,
                   user2: userId,
                   user2Name: myNickname,
                   user2Gender: myGender,
                   user2Intent: intent,
                   user2Location: location,
+                  user2Verified: isSelfieVerified || false,
                   isHumanVerified: true,
                   createdAt: Date.now(),
                   status: 'active',
+                  handles: {},
                   typing: null
                 });
 
@@ -1095,7 +1411,8 @@
                   name: targetCandidate.nickname,
                   gender: targetCandidate.gender,
                   intent: targetCandidate.intent,
-                  location: targetCandidate.location
+                  location: targetCandidate.location,
+                  verified: targetCandidate.isVerified || false
                 });
               }
               try { await deleteDoc(myTicketRef); } catch(e){}
@@ -1124,7 +1441,8 @@
               name: (sData.user1 === userId ? sData.user2Name : sData.user1Name) || data.matchedWith || 'Date',
               gender: (sData.user1 === userId ? sData.user2Gender : sData.user1Gender) || 'Pinoy',
               intent: (sData.user1 === userId ? sData.user2Intent : sData.user1Intent) || 'Dating',
-              location: (sData.user1 === userId ? sData.user2Location : sData.user1Location) || 'PH'
+              location: (sData.user1 === userId ? sData.user2Location : sData.user1Location) || 'PH',
+              verified: (sData.user1 === userId ? sData.user2Verified : sData.user1Verified) || false
             };
 
             if (typeof joinChatSession === 'function') {
@@ -1139,11 +1457,11 @@
       window.esmeringle.unsubs.push(unsubMyTicket);
     }
 
-    // TOGGLE REACT ON MESSAGE (Supports 1-on-1 and Group chats)
     async function toggleReaction(sessionId, msgId, emoji, isGroup = false) {
       const { db, appId, userId } = window.esmeringle;
       if (!db || !userId) return;
       playBeep('click');
+      triggerHapticFeedback([20]);
 
       const colPath = isGroup ? 'lounge_messages' : `chat_sessions/${sessionId}/messages`;
       const msgRef = doc(db, 'artifacts', appId, 'public', 'data', ...colPath.split('/'), msgId);
@@ -1157,7 +1475,6 @@
           const currentList = reactions[emoji] || [];
 
           if (currentList.includes(userId)) {
-            // Remove reaction
             const updated = currentList.filter(id => id !== userId);
             if (updated.length > 0) {
               reactions[emoji] = updated;
@@ -1165,7 +1482,6 @@
               delete reactions[emoji];
             }
           } else {
-            // Add reaction
             reactions[emoji] = [...currentList, userId];
           }
 
@@ -1176,15 +1492,395 @@
       }
     }
 
+    // ================= WEBRTC AUDIO & VIDEO CALLING ENGINE =================
+    async function setupLocalMedia(video = true, audio = true) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: video ? { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } : false,
+          audio: audio
+        });
+        window.esmeringle.localStream = stream;
+        const localVideo = document.getElementById('localVideo');
+        if (localVideo) {
+          localVideo.srcObject = stream;
+        }
+
+        const voicePlaceholder = document.getElementById('voiceOnlyPlaceholder');
+        const localContainer = document.getElementById('localVideoContainer');
+        if (!video) {
+          if (voicePlaceholder) voicePlaceholder.classList.remove('hidden');
+          if (localContainer) localContainer.classList.add('hidden');
+        } else {
+          if (voicePlaceholder) voicePlaceholder.classList.add('hidden');
+          if (localContainer) localContainer.classList.remove('hidden');
+        }
+
+        return stream;
+      } catch (e) {
+        console.error("Camera/Mic access error:", e);
+        showToast("Camera or Mic permission denied!");
+        throw e;
+      }
+    }
+
+    async function initiateCall(isVideo = true) {
+      const { db, appId, sessionId, userId, myNickname, chatConnected } = window.esmeringle;
+      if (!chatConnected || !sessionId || !db) {
+        showToast("You need an active chat session to call.");
+        return;
+      }
+
+      showToast(`Starting ${isVideo ? 'video' : 'voice'} call...`);
+      playBeep('spark');
+      triggerHapticFeedback([40, 60, 40]);
+
+      try {
+        const stream = await setupLocalMedia(isVideo, true);
+        const pc = new RTCPeerConnection(rtcConfig);
+        window.esmeringle.peerConnection = pc;
+
+        const remoteStream = new MediaStream();
+        window.esmeringle.remoteStream = remoteStream;
+        const remoteVideo = document.getElementById('remoteVideo');
+        if (remoteVideo) remoteVideo.srcObject = remoteStream;
+
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+        pc.ontrack = (event) => {
+          event.streams[0].getTracks().forEach(t => remoteStream.addTrack(t));
+        };
+
+        const callDocRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'calls'));
+        window.esmeringle.currentCallId = callDocRef.id;
+
+        const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
+        const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            addDoc(callerCandidatesCol, event.candidate.toJSON());
+          }
+        };
+
+        const offerDesc = await pc.createOffer();
+        await pc.setLocalDescription(offerDesc);
+
+        await setDoc(callDocRef, {
+          callerId: userId,
+          callerName: myNickname,
+          isVideo: isVideo,
+          status: 'calling',
+          createdAt: Date.now(),
+          offer: {
+            sdp: offerDesc.sdp,
+            type: offerDesc.type
+          }
+        });
+
+        openCallOverlay(isVideo);
+
+        const unsubCall = onSnapshot(callDocRef, (snap) => {
+          const data = snap.data();
+          if (!data) return;
+
+          if (data.status === 'ended') {
+            hangUpCall(false);
+            showToast("Call ended.");
+          }
+
+          if (!pc.currentRemoteDescription && data.answer) {
+            const answerDesc = new RTCSessionDescription(data.answer);
+            pc.setRemoteDescription(answerDesc);
+            startCallTimer();
+          }
+        });
+        window.esmeringle.callUnsubs.push(unsubCall);
+
+        const unsubCalleeIce = onSnapshot(calleeCandidatesCol, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              pc.addIceCandidate(candidate);
+            }
+          });
+        });
+        window.esmeringle.callUnsubs.push(unsubCalleeIce);
+
+      } catch (err) {
+        console.error("Initiate call error:", err);
+        hangUpCall(false);
+      }
+    }
+
+    function listenForIncomingCalls(sessionId) {
+      const { db, appId, userId } = window.esmeringle;
+      if (!db || !sessionId) return;
+
+      const callsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'calls');
+      const unsubCalls = onSnapshot(callsCol, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          const callData = change.doc.data();
+          const callId = change.doc.id;
+
+          if (change.type === 'added' && callData.status === 'calling' && callData.callerId !== userId) {
+            window.esmeringle.incomingCallData = { id: callId, ...callData };
+            showIncomingCallDialog(callData);
+          }
+
+          if (change.type === 'modified' && callData.status === 'ended') {
+            hideIncomingCallDialog();
+            if (window.esmeringle.currentCallId === callId) {
+              hangUpCall(false);
+            }
+          }
+        });
+      });
+      window.esmeringle.unsubs.push(unsubCalls);
+    }
+
+    function showIncomingCallDialog(callData) {
+      const banner = document.getElementById('incomingCallBanner');
+      document.getElementById('incomingCallerName').innerText = callData.callerName || 'Your Match';
+      document.getElementById('incomingCallType').innerText = callData.isVideo ? '🎥 Incoming Video Call' : '📞 Incoming Voice Call';
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+      playBeep('spark');
+      triggerHapticFeedback([100, 100, 100]);
+    }
+
+    function hideIncomingCallDialog() {
+      const banner = document.getElementById('incomingCallBanner');
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+      window.esmeringle.incomingCallData = null;
+    }
+
+    async function acceptIncomingCall() {
+      const incoming = window.esmeringle.incomingCallData;
+      if (!incoming) return;
+
+      hideIncomingCallDialog();
+      const { db, appId, sessionId } = window.esmeringle;
+      const isVideo = incoming.isVideo !== false;
+
+      try {
+        const stream = await setupLocalMedia(isVideo, true);
+        const pc = new RTCPeerConnection(rtcConfig);
+        window.esmeringle.peerConnection = pc;
+
+        const remoteStream = new MediaStream();
+        window.esmeringle.remoteStream = remoteStream;
+        const remoteVideo = document.getElementById('remoteVideo');
+        if (remoteVideo) remoteVideo.srcObject = remoteStream;
+
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+        pc.ontrack = (event) => {
+          event.streams[0].getTracks().forEach(t => remoteStream.addTrack(t));
+        };
+
+        const callDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'calls', incoming.id);
+        window.esmeringle.currentCallId = incoming.id;
+
+        const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
+        const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            addDoc(calleeCandidatesCol, event.candidate.toJSON());
+          }
+        };
+
+        await pc.setRemoteDescription(new RTCSessionDescription(incoming.offer));
+        const answerDesc = await pc.createAnswer();
+        await pc.setLocalDescription(answerDesc);
+
+        await updateDoc(callDocRef, {
+          answer: {
+            sdp: answerDesc.sdp,
+            type: answerDesc.type
+          },
+          status: 'connected'
+        });
+
+        openCallOverlay(isVideo);
+        startCallTimer();
+
+        const unsubCallerIce = onSnapshot(callerCandidatesCol, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              pc.addIceCandidate(candidate);
+            }
+          });
+        });
+        window.esmeringle.callUnsubs.push(unsubCallerIce);
+
+        const unsubCall = onSnapshot(callDocRef, (snap) => {
+          const data = snap.data();
+          if (data && data.status === 'ended') {
+            hangUpCall(false);
+          }
+        });
+        window.esmeringle.callUnsubs.push(unsubCall);
+
+      } catch (e) {
+        console.error("Accept call error:", e);
+        hangUpCall(false);
+      }
+    }
+
+    async function rejectIncomingCall() {
+      const incoming = window.esmeringle.incomingCallData;
+      if (!incoming) return;
+      hideIncomingCallDialog();
+
+      const { db, appId, sessionId } = window.esmeringle;
+      if (db && sessionId) {
+        try {
+          const callDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'calls', incoming.id);
+          await updateDoc(callDocRef, { status: 'ended' });
+        } catch(e){}
+      }
+    }
+
+    async function hangUpCall(notifyRemote = true) {
+      stopCallTimer();
+      hideIncomingCallDialog();
+
+      const { db, appId, sessionId, currentCallId, localStream, peerConnection } = window.esmeringle;
+
+      if (notifyRemote && db && sessionId && currentCallId) {
+        try {
+          const callDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'calls', currentCallId);
+          await updateDoc(callDocRef, { status: 'ended' });
+        } catch(e){}
+      }
+
+      if (peerConnection) {
+        peerConnection.close();
+        window.esmeringle.peerConnection = null;
+      }
+
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        window.esmeringle.localStream = null;
+      }
+
+      if (window.esmeringle.callUnsubs && window.esmeringle.callUnsubs.length) {
+        window.esmeringle.callUnsubs.forEach(unsub => {
+          try { if (typeof unsub === 'function') unsub(); } catch(e){}
+        });
+        window.esmeringle.callUnsubs = [];
+      }
+
+      window.esmeringle.currentCallId = null;
+
+      const overlay = document.getElementById('callOverlay');
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+      }
+
+      const localVideo = document.getElementById('localVideo');
+      const remoteVideo = document.getElementById('remoteVideo');
+      if (localVideo) localVideo.srcObject = null;
+      if (remoteVideo) remoteVideo.srcObject = null;
+
+      playBeep('disconnect');
+    }
+
+    function openCallOverlay(isVideo) {
+      const overlay = document.getElementById('callOverlay');
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      document.getElementById('callPartnerLabel').innerHTML = `
+        <i class="fa-solid ${isVideo ? 'fa-video' : 'fa-phone'} animate-pulse"></i> 
+        ${window.esmeringle.currentPartner?.name || 'Match'} (${isVideo ? 'Video' : 'Voice'})
+      `;
+    }
+
+    function startCallTimer() {
+      stopCallTimer();
+      window.esmeringle.callDurationSec = 0;
+      const durationEl = document.getElementById('callDuration');
+      window.esmeringle.callTimer = setInterval(() => {
+        window.esmeringle.callDurationSec++;
+        const mins = String(Math.floor(window.esmeringle.callDurationSec / 60)).padStart(2, '0');
+        const secs = String(window.esmeringle.callDurationSec % 60).padStart(2, '0');
+        if (durationEl) durationEl.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopCallTimer() {
+      if (window.esmeringle.callTimer) {
+        clearInterval(window.esmeringle.callTimer);
+        window.esmeringle.callTimer = null;
+      }
+      const durationEl = document.getElementById('callDuration');
+      if (durationEl) durationEl.innerText = '00:00';
+    }
+
+    function toggleAudioTrack() {
+      const stream = window.esmeringle.localStream;
+      if (!stream) return;
+      const audioTrack = stream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        const icon = document.getElementById('micIcon');
+        const btn = document.getElementById('toggleMicBtn');
+        if (audioTrack.enabled) {
+          icon.className = 'fa-solid fa-microphone';
+          btn.classList.remove('bg-rose-600', 'text-white');
+        } else {
+          icon.className = 'fa-solid fa-microphone-slash text-rose-400';
+          btn.classList.add('bg-rose-600/30');
+          showToast("Microphone muted");
+        }
+      }
+    }
+
+    function toggleVideoTrack() {
+      const stream = window.esmeringle.localStream;
+      if (!stream) return;
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        const icon = document.getElementById('camIcon');
+        const btn = document.getElementById('toggleCamBtn');
+        if (videoTrack.enabled) {
+          icon.className = 'fa-solid fa-video';
+          btn.classList.remove('bg-rose-600', 'text-white');
+        } else {
+          icon.className = 'fa-solid fa-video-slash text-rose-400';
+          btn.classList.add('bg-rose-600/30');
+          showToast("Camera disabled");
+        }
+      }
+    }
+
     window.esmeringleInitAuth = initUserAuth;
     window.esmeringleRegisterPresence = registerUserPresence;
     window.esmeringleUnregisterPresence = unregisterUserPresence;
     window.esmeringleStartReactiveMatchmaking = startReactiveMatchmaking;
     window.toggleReaction = toggleReaction;
+    window.initiateCall = initiateCall;
+    window.acceptIncomingCall = acceptIncomingCall;
+    window.rejectIncomingCall = rejectIncomingCall;
+    window.hangUpCall = hangUpCall;
+    window.toggleAudioTrack = toggleAudioTrack;
+    window.toggleVideoTrack = toggleVideoTrack;
+    window.listenForIncomingCalls = listenForIncomingCalls;
   </script>
 
   <!-- ================= MAIN CONTROLLER JAVASCRIPT ================= -->
   <script>
+    function triggerHapticFeedback(pattern = [30]) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(pattern); } catch(e){}
+      }
+    }
+
     function validateNickname(name) {
       if (!name || typeof name !== 'string') {
         return "Please enter a dating nickname.";
@@ -1486,19 +2182,683 @@
     }
 
     function switchToSetup() {
+      hangUpCall(true);
       cleanChatSubscriptions();
       removeQueueTicket();
 
       window.esmeringle.isSearching = false;
       window.esmeringle.isPairing = false;
       window.esmeringle.chatConnected = false;
-      window.esmeringle.sessionId = null;
-      window.esmeringle.currentPartner = null;
 
       document.getElementById('setupView').classList.remove('hidden');
       document.getElementById('radarView').classList.add('hidden');
       document.getElementById('chat1on1View').classList.add('hidden');
       document.getElementById('groupChatView').classList.add('hidden');
+
+      renderRecentMatchBox();
+    }
+
+    /* PERSISTENT RECENT MATCH (NEVER EXPIRES) */
+    function saveRecentMatch(partner, sessionId) {
+      if (!partner || !sessionId) return;
+      const recent = {
+        partner: partner,
+        sessionId: sessionId,
+        savedAt: Date.now()
+      };
+      localStorage.setItem('esmeringle_recent_match', JSON.stringify(recent));
+      localStorage.setItem('esmeringle_active_session', JSON.stringify(recent));
+      renderRecentMatchBox();
+    }
+
+    function getRecentMatch() {
+      try {
+        const raw = localStorage.getItem('esmeringle_recent_match') || localStorage.getItem('esmeringle_active_session');
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function clearRecentMatch() {
+      localStorage.removeItem('esmeringle_recent_match');
+      localStorage.removeItem('esmeringle_active_session');
+      renderRecentMatchBox();
+      showToast('Recent match cleared.');
+    }
+
+    function renderRecentMatchBox() {
+      const box = document.getElementById('recentMatchBox');
+      if (!box) return;
+      const recent = getRecentMatch();
+      if (!recent || !recent.partner) {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+        return;
+      }
+
+      document.getElementById('recentMatchName').innerText = recent.partner.name || 'Your Date';
+      document.getElementById('recentMatchDetail').innerText = `${recent.partner.location || 'PH'} • ${recent.partner.intent || 'Casual'}`;
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+    }
+
+    async function reconnectRecentMatch() {
+      const recent = getRecentMatch();
+      if (!recent || !recent.sessionId || !recent.partner) {
+        showToast('No saved match found.');
+        return;
+      }
+
+      showToast(`Reconnecting with ${recent.partner.name}...`);
+      playBeep('click');
+
+      const { db, appId } = window.esmeringle;
+      if (db) {
+        try {
+          const { doc, getDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', recent.sessionId);
+          const snap = await getDoc(sessionRef);
+
+          if (snap.exists()) {
+            await updateDoc(sessionRef, { status: 'active' });
+            joinChatSession(recent.sessionId, recent.partner);
+            return;
+          }
+        } catch (e) {
+          console.warn("Session resume attempt error:", e);
+        }
+      }
+
+      joinChatSession(recent.sessionId, recent.partner);
+    }
+
+    /* INBOX STORAGE SYSTEM */
+    function getStoredInbox() {
+      try {
+        const raw = localStorage.getItem('esmeringle_inbox_matches');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveToInbox(partner, sessionId) {
+      if (!partner || !sessionId) return;
+      const inbox = getStoredInbox();
+      const existingIdx = inbox.findIndex(i => i.sessionId === sessionId || (i.partner && i.partner.userId === partner.userId));
+
+      const entry = {
+        partner: partner,
+        sessionId: sessionId,
+        savedAt: Date.now()
+      };
+
+      if (existingIdx !== -1) {
+        inbox[existingIdx] = entry;
+      } else {
+        inbox.unshift(entry);
+      }
+
+      localStorage.setItem('esmeringle_inbox_matches', JSON.stringify(inbox));
+      updateInboxCountBadge();
+    }
+
+    function updateInboxCountBadge() {
+      const badge = document.getElementById('inboxCountBadge');
+      if (!badge) return;
+      const inbox = getStoredInbox();
+      if (inbox.length > 0) {
+        badge.innerText = inbox.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    /* HEART BUTTON ACTION: WANT MATCH -> TRANSFER TO INBOX */
+    function keepAndTransferToInbox() {
+      const { currentPartner, sessionId } = window.esmeringle;
+      if (!currentPartner || !sessionId) {
+        showToast('No active match to save.');
+        return;
+      }
+
+      playBeep('spark');
+      triggerHapticFeedback([40, 40, 80]);
+      saveToInbox(currentPartner, sessionId);
+      saveRecentMatch(currentPartner, sessionId);
+
+      const container = document.getElementById('floatingHeartsContainer');
+      if (container) {
+        for (let i = 0; i < 6; i++) {
+          const heart = document.createElement('div');
+          heart.className = 'floating-sparkle text-rosebrand-400 text-3xl';
+          heart.innerHTML = '💖';
+          heart.style.left = `${Math.random() * 80 + 10}%`;
+          heart.style.top = `${Math.random() * 40 + 30}%`;
+          container.appendChild(heart);
+          setTimeout(() => heart.remove(), 1400);
+        }
+      }
+
+      showToast(`It's a Match! 💕 Conversation moved to your Inbox.`);
+      openInboxModal();
+    }
+
+    /* DISLIKE / PASS BUTTON ACTION: DON'T LIKE MATCH -> NEXT DATE */
+    function dislikeMatchPrompt() {
+      playBeep('click');
+      triggerHapticFeedback([50]);
+      hangUpCall(true);
+      showToast('Passed match. Finding another real single...');
+      nextPartnerPrompt();
+    }
+
+    /* OPEN & RENDER INBOX MODAL */
+    function openInboxModal() {
+      playBeep('click');
+      const modal = document.getElementById('inboxModal');
+      const list = document.getElementById('inboxList');
+      const inbox = getStoredInbox();
+
+      list.innerHTML = '';
+      if (inbox.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-8 text-slate-400 text-xs">
+            <i class="fa-solid fa-heart-crack text-2xl text-slate-500 mb-2 block"></i>
+            No saved matches in your inbox yet.<br>Click the <strong>Keep Match</strong> heart button during a chat to save them here!
+          </div>
+        `;
+      } else {
+        inbox.forEach((item, index) => {
+          const dateStr = new Date(item.savedAt || Date.now()).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          const card = document.createElement('div');
+          card.className = 'p-3 bg-datingdark-850 rounded-2xl border border-datingdark-border flex items-center justify-between hover:border-rosebrand-500/50 transition';
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rosebrand-600 to-heart-pink flex items-center justify-center text-white font-extrabold text-sm shadow">
+                ${(item.partner.name || 'D').charAt(0).toUpperCase()}
+              </div>
+              <div class="text-left">
+                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>${escapeHtml(item.partner.name || 'Date')}</span>
+                  <span class="text-[10px] text-rosebrand-400 bg-rosebrand-500/15 px-2 py-0.2 rounded-full border border-rosebrand-500/30">${escapeHtml(item.partner.gender || 'Pinoy')}</span>
+                  ${item.partner.verified ? '<i class="fa-solid fa-circle-check text-cyan-400 text-[10px]" title="Verified Live Human"></i>' : ''}
+                </div>
+                <div class="text-[10px] text-slate-400">
+                  ${escapeHtml(item.partner.location || 'PH')} • <span class="text-slate-500">${dateStr}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openInboxChat('${item.sessionId}')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink text-white text-xs font-bold shadow-md transition">
+                Chat
+              </button>
+              <button onclick="removeInboxItem(${index})" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs" title="Remove from Inbox">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeInboxModal() {
+      const modal = document.getElementById('inboxModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function removeInboxItem(index) {
+      const inbox = getStoredInbox();
+      inbox.splice(index, 1);
+      localStorage.setItem('esmeringle_inbox_matches', JSON.stringify(inbox));
+      updateInboxCountBadge();
+      openInboxModal();
+    }
+
+    async function openInboxChat(sessionId) {
+      const inbox = getStoredInbox();
+      const match = inbox.find(m => m.sessionId === sessionId);
+      if (!match) return;
+
+      closeInboxModal();
+      showToast(`Opening chat with ${match.partner.name}...`);
+      
+      const { db, appId } = window.esmeringle;
+      if (db) {
+        try {
+          const { doc, getDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+          const snap = await getDoc(sessionRef);
+          if (snap.exists()) {
+            await updateDoc(sessionRef, { status: 'active' });
+          }
+        } catch(e){}
+      }
+
+      joinChatSession(match.sessionId, match.partner);
+    }
+
+    /* PUSH-TO-TALK / VOICE NOTES ENGINE */
+    async function toggleVoiceRecording() {
+      if (window.esmeringle.isRecordingVoice) {
+        stopAndSendVoiceNote();
+      } else {
+        startVoiceRecording();
+      }
+    }
+
+    async function startVoiceRecording() {
+      if (!window.esmeringle.chatConnected) {
+        showToast('Start a match to send voice notes.');
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        window.esmeringle.audioChunks = [];
+        const mediaRecorder = new MediaRecorder(stream);
+        window.esmeringle.mediaRecorder = mediaRecorder;
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            window.esmeringle.audioChunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          if (window.esmeringle.cancelVoice) {
+            window.esmeringle.cancelVoice = false;
+            return;
+          }
+          const audioBlob = new Blob(window.esmeringle.audioChunks, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = () => {
+            const base64Audio = reader.result;
+            sendVoiceMessage(base64Audio);
+          };
+        };
+
+        mediaRecorder.start();
+        window.esmeringle.isRecordingVoice = true;
+
+        const btn = document.getElementById('voiceRecordBtn');
+        const icon = document.getElementById('voiceRecordIcon');
+        const statusBox = document.getElementById('voiceRecordingStatus');
+        btn.classList.add('bg-rosebrand-600', 'text-white', 'border-rosebrand-400');
+        icon.className = 'fa-solid fa-stop text-sm animate-pulse';
+        statusBox.classList.remove('hidden');
+        statusBox.classList.add('flex');
+
+        let seconds = 0;
+        document.getElementById('voiceRecordTimer').innerText = '0s';
+        window.esmeringle.recordTimerInterval = setInterval(() => {
+          seconds++;
+          document.getElementById('voiceRecordTimer').innerText = `${seconds}s`;
+          if (seconds >= 30) {
+            stopAndSendVoiceNote();
+          }
+        }, 1000);
+
+        playBeep('click');
+        triggerHapticFeedback([40]);
+      } catch (err) {
+        console.error("Voice record error:", err);
+        showToast("Microphone permission required for voice notes.");
+      }
+    }
+
+    function stopAndSendVoiceNote() {
+      if (!window.esmeringle.isRecordingVoice) return;
+      window.esmeringle.isRecordingVoice = false;
+      clearInterval(window.esmeringle.recordTimerInterval);
+
+      const btn = document.getElementById('voiceRecordBtn');
+      const icon = document.getElementById('voiceRecordIcon');
+      const statusBox = document.getElementById('voiceRecordingStatus');
+      btn.classList.remove('bg-rosebrand-600', 'text-white', 'border-rosebrand-400');
+      icon.className = 'fa-solid fa-microphone text-sm';
+      statusBox.classList.add('hidden');
+      statusBox.classList.remove('flex');
+
+      if (window.esmeringle.mediaRecorder && window.esmeringle.mediaRecorder.state !== 'inactive') {
+        window.esmeringle.mediaRecorder.stop();
+      }
+      playBeep('sent');
+    }
+
+    function cancelVoiceRecording() {
+      window.esmeringle.cancelVoice = true;
+      stopAndSendVoiceNote();
+      showToast('Voice memo cancelled.');
+    }
+
+    async function sendVoiceMessage(audioBase64) {
+      const { db, appId, sessionId, userId, myNickname } = window.esmeringle;
+      if (!db || !sessionId) return;
+      try {
+        const { collection, addDoc, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
+        await addDoc(msgsCol, {
+          senderId: userId,
+          senderName: myNickname,
+          audioUrl: audioBase64,
+          text: '',
+          reactions: {},
+          createdAt: Date.now()
+        });
+
+        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+        updateDoc(sessionRef, { typing: null, status: 'active' });
+      } catch (err) {
+        console.error("Error sending voice message:", err);
+      }
+    }
+
+    /* VIEW-ONCE PHOTO FEATURE */
+    function toggleViewOnceState() {
+      window.esmeringle.isViewOncePending = !window.esmeringle.isViewOncePending;
+      const btn = document.getElementById('viewOnceToggleBtn');
+      const label = document.getElementById('viewOnceStatusLabel');
+      if (window.esmeringle.isViewOncePending) {
+        btn.classList.add('border-rosebrand-500', 'bg-rosebrand-500/20', 'text-rosebrand-300');
+        label.innerText = 'View-Once: ON 👁️';
+        showToast('Photo will self-destruct after viewing!');
+      } else {
+        btn.classList.remove('border-rosebrand-500', 'bg-rosebrand-500/20', 'text-rosebrand-300');
+        label.innerText = 'View-Once: OFF';
+      }
+    }
+
+    function revealViewOnceImage(msgId, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const overlay = container.querySelector('.view-once-overlay');
+      const img = container.querySelector('img');
+
+      if (overlay) overlay.remove();
+      if (img) img.classList.remove('blur-xl', 'brightness-50');
+
+      triggerHapticFeedback([30]);
+      let timeLeft = 6;
+      const timerBadge = document.createElement('div');
+      timerBadge.className = 'absolute top-2 right-2 bg-black/80 text-rosebrand-400 font-mono text-[10px] px-2 py-0.5 rounded-full border border-rosebrand-500/50';
+      timerBadge.innerText = `${timeLeft}s`;
+      container.appendChild(timerBadge);
+
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerBadge.innerText = `${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          container.innerHTML = `
+            <div class="p-4 bg-datingdark-900/90 text-center text-xs text-slate-500 italic rounded-xl flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-clock-rotate-left"></i> Photo expired
+            </div>
+          `;
+        }
+      }, 1000);
+    }
+
+    /* MINI-GAME / DEEP TALK CATEGORIZED DECKS */
+    const GAME_DECKS = {
+      thisorthat: [
+        '☕ Coffee Date vs 🚗 Late Night Drive?',
+        '🥓 Samgyup Foodtrip vs 🍷 BGC Fine Dining?',
+        '🎮 Valorant Duo vs 📺 K-Drama Marathon?',
+        '🌲 Baguio Cuddles vs 🏖️ Elyu Beach Trip?'
+      ],
+      ligaw: [
+        '🚩 Red Flag or 🟢 Green Flag: Late mag-reply pero may paragraphs?',
+        '💍 Relationship Dealbreaker mo: Walang ambisyon or Walang sense of humor?',
+        '💌 Naniniwala ka ba sa Love at First Sight or Love after 10 coffee dates?',
+        '👀 Sinong dapat mag-first move sa first date?'
+      ],
+      deeptalk: [
+        '🌙 Ano ang pinakamalaking realization mo nitong nakaraang buwan?',
+        '💭 Anong memory sa buhay mo ang lagi mong binabalik-balikan?',
+        '🎯 Kung may 1 thing ka na babaguhin sa past mo, ano yun?',
+        '🤍 Ano ang meaning ng tunay na peace of mind para sayo?'
+      ]
+    };
+
+    function renderGameCategory(categoryKey) {
+      ['thisorthat', 'ligaw', 'deeptalk'].forEach(k => {
+        const tab = document.getElementById(`tab-${k}`);
+        if (tab) {
+          if (k === categoryKey) {
+            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+          } else {
+            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white';
+          }
+        }
+      });
+
+      const container = document.getElementById('gameDeckOptions');
+      if (!container) return;
+      container.innerHTML = '';
+      const list = GAME_DECKS[categoryKey] || GAME_DECKS.thisorthat;
+
+      list.forEach(prompt => {
+        const btn = document.createElement('button');
+        btn.className = 'p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-left text-slate-200 transition text-[11px] leading-tight';
+        btn.innerText = prompt;
+        btn.onclick = () => sendGamePrompt(prompt);
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleKiligGameTray() {
+      const tray = document.getElementById('kiligGameTray');
+      tray.classList.toggle('hidden');
+      if (!tray.classList.contains('hidden')) {
+        renderGameCategory('thisorthat');
+      }
+      playBeep('click');
+    }
+
+    function sendGamePrompt(promptText) {
+      toggleKiligGameTray();
+      document.getElementById('chatInput').value = `🎲 Kilig Game: ${promptText}`;
+      handleSend1on1();
+    }
+
+    /* CURATED DATE SPOT SUGGESTER */
+    const DATE_SPOTS_DATA = {
+      'Metro Manila (BGC / Makati / QC)': [
+        { name: 'Starbucks Reserve - BGC High Street', tag: 'Coffee & Stroll', vibe: 'Cozy, Public & Safe' },
+        { name: 'Ayala Triangle Gardens - Makati', tag: 'Park Kwentuhan', vibe: 'Lush greenery & cafes' },
+        { name: 'Maginhawa Street - QC', tag: 'Foodtrip Walk', vibe: 'Casual street food & chill bistros' }
+      ],
+      'Cebu & Visayas': [
+        { name: 'Cebu IT Park (The Walk)', tag: 'Late Night Coffee', vibe: '24/7 vibrant & crowded' },
+        { name: 'Tops Lookout / Busay', tag: 'Romantic City View', vibe: 'Breezy evening date' }
+      ],
+      'Baguio / Cordillera': [
+        { name: 'Cafe by the Ruins', tag: 'Art & Hot Chocolate', vibe: 'Warm cuddling ambience' },
+        { name: 'Camp John Hay Open Park', tag: 'Pine Tree Walk', vibe: 'Quiet & scenic stroll' }
+      ]
+    };
+
+    function openDateSpotsModal() {
+      playBeep('click');
+      const loc = window.esmeringle.location || 'Metro Manila (BGC / Makati / QC)';
+      document.getElementById('dateSpotsLocationLabel').innerText = loc;
+      const list = document.getElementById('dateSpotsList');
+      list.innerHTML = '';
+
+      const spots = DATE_SPOTS_DATA[loc] || DATE_SPOTS_DATA['Metro Manila (BGC / Makati / QC)'];
+      spots.forEach(sp => {
+        const el = document.createElement('div');
+        el.className = 'p-3 rounded-2xl bg-datingdark-850 border border-datingdark-border flex items-center justify-between';
+        el.innerHTML = `
+          <div>
+            <div class="text-xs font-bold text-white">${escapeHtml(sp.name)}</div>
+            <div class="text-[10px] text-amber-300 font-semibold">${escapeHtml(sp.tag)} • <span class="text-slate-400 font-normal">${escapeHtml(sp.vibe)}</span></div>
+          </div>
+          <button onclick="shareSpotToChat('${sp.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-bold">
+            Invite ☕
+          </button>
+        `;
+        list.appendChild(el);
+      });
+
+      document.getElementById('dateSpotsModal').classList.remove('hidden');
+      document.getElementById('dateSpotsModal').classList.add('flex');
+    }
+
+    function closeDateSpotsModal() {
+      document.getElementById('dateSpotsModal').classList.add('hidden');
+      document.getElementById('dateSpotsModal').classList.remove('flex');
+    }
+
+    function shareSpotToChat(spotName) {
+      closeDateSpotsModal();
+      document.getElementById('chatInput').value = `☕ Date Invite: Tara, lets meet at ${spotName} when we are free!`;
+      handleSend1on1();
+    }
+
+    /* MUTUAL SOCIAL HANDLE REVEAL */
+    function openHandleSwapModal() {
+      playBeep('click');
+      document.getElementById('handleSwapModal').classList.remove('hidden');
+      document.getElementById('handleSwapModal').classList.add('flex');
+    }
+
+    function closeHandleSwapModal() {
+      document.getElementById('handleSwapModal').classList.add('hidden');
+      document.getElementById('handleSwapModal').classList.remove('flex');
+    }
+
+    async function submitSocialHandle() {
+      const input = document.getElementById('mySocialHandleInput');
+      const val = input.value.trim();
+      if (!val) {
+        showToast('Please type your Instagram or Telegram handle.');
+        return;
+      }
+      const { db, appId, sessionId, userId } = window.esmeringle;
+      if (!db || !sessionId) return;
+
+      try {
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+        await updateDoc(sessionRef, {
+          [`handles.${userId}`]: val
+        });
+        showToast('Handle locked in! Will reveal once match submits theirs.');
+        closeHandleSwapModal();
+      } catch (e) {
+        console.warn("Handle update error:", e);
+      }
+    }
+
+    function checkHandlesSync(handles = {}) {
+      const { userId, currentPartner } = window.esmeringle;
+      if (!currentPartner) return;
+      const myHandle = handles[userId];
+      const partnerHandle = handles[currentPartner.userId];
+
+      if (myHandle && partnerHandle) {
+        const box = document.getElementById('partnerHandleBox');
+        if (box) {
+          box.innerHTML = `
+            <div class="text-emerald-400 font-bold mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-sparkles"></i> Mutual Match! Handles Unlocked:
+            </div>
+            <div class="text-slate-200"><strong>${escapeHtml(currentPartner.name)}:</strong> <span class="text-rosebrand-300 font-mono">${escapeHtml(partnerHandle)}</span></div>
+            <div class="text-slate-400 text-[10px]">Your handle: ${escapeHtml(myHandle)}</div>
+          `;
+          box.classList.remove('hidden');
+        }
+      }
+    }
+
+    /* LIVE SELFIE VERIFICATION */
+    async function openSelfieVerificationModal() {
+      playBeep('click');
+      const modal = document.getElementById('selfieModal');
+      const video = document.getElementById('selfieVideo');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: 320, height: 320 },
+          audio: false
+        });
+        window.esmeringle.selfieStream = stream;
+        video.srcObject = stream;
+      } catch (e) {
+        showToast('Camera access denied for verification.');
+        closeSelfieModal();
+      }
+    }
+
+    function closeSelfieModal() {
+      const modal = document.getElementById('selfieModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      if (window.esmeringle.selfieStream) {
+        window.esmeringle.selfieStream.getTracks().forEach(t => t.stop());
+        window.esmeringle.selfieStream = null;
+      }
+    }
+
+    function captureLiveSelfie() {
+      const video = document.getElementById('selfieVideo');
+      const canvas = document.getElementById('selfieCanvas');
+      if (!video || !canvas) return;
+
+      canvas.width = 160;
+      canvas.height = 160;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, 160, 160);
+
+      window.esmeringle.isSelfieVerified = true;
+      localStorage.setItem('esmeringle_verified', 'true');
+      updateVerificationBadgeUI();
+      closeSelfieModal();
+      showToast('Verified Live Human badge unlocked! 📸');
+      triggerHapticFeedback([40, 80]);
+    }
+
+    function updateVerificationBadgeUI() {
+      const setupBadge = document.getElementById('verifyBadgeSetup');
+      const chatShield = document.getElementById('strangerVerifiedShield');
+      if (window.esmeringle.isSelfieVerified) {
+        if (setupBadge) setupBadge.innerHTML = '<span class="text-cyan-300 font-bold">Verified 100% Live ✓</span>';
+      }
+      if (window.esmeringle.currentPartner?.verified && chatShield) {
+        chatShield.classList.remove('hidden');
+        chatShield.classList.add('flex');
+      }
+    }
+
+    /* PROGRESSIVE CHEMISTRY METER UPDATE */
+    function updateChemistryMeter(count) {
+      const bar = document.getElementById('chemistryProgressBar');
+      const status = document.getElementById('chemistryStatusText');
+      if (!bar || !status) return;
+
+      let pct = Math.min(100, Math.max(15, count * 7));
+      bar.style.width = `${pct}%`;
+
+      if (pct < 35) {
+        status.innerText = "Getting to Know (Level 1)";
+      } else if (pct < 70) {
+        status.innerText = "Mutual Kilig (Level 2) ✨";
+      } else {
+        status.innerText = "Deep Spark (Soulmates) 💖🔥";
+      }
     }
 
     function startSearchOrJoin() {
@@ -1578,7 +2938,6 @@
       showToast('Search cancelled');
     }
 
-    // ================= DEVICE IMAGE HANDLING (COMPRESSION & PREVIEW) =================
     function compressImageFile(file, maxWidth = 800, quality = 0.7) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1635,6 +2994,7 @@
 
     function cancelImageUpload() {
       window.esmeringle.pendingImageBase64 = null;
+      window.esmeringle.isViewOncePending = false;
       const previewContainer = document.getElementById('imagePreviewContainer');
       previewContainer.classList.add('hidden');
       previewContainer.classList.remove('flex');
@@ -1675,22 +3035,19 @@
       document.getElementById('groupDeviceImageInput').value = '';
     }
 
-    // ================= JOIN & PERSIST 1-ON-1 CHAT SESSION =================
     async function joinChatSession(sessionId, partner) {
+      cleanChatSubscriptions();
+
       window.esmeringle.isSearching = false;
       window.esmeringle.isPairing = false;
       window.esmeringle.chatConnected = true;
       window.esmeringle.sessionId = sessionId;
       window.esmeringle.currentPartner = partner;
+      window.esmeringle.msgCount = 0;
 
-      // SAVE ACTIVE SESSION TO LOCALSTORAGE FOR ACCIDENTAL CLOSE RECOVERY
-      localStorage.setItem('esmeringle_active_session', JSON.stringify({
-        sessionId: sessionId,
-        partner: partner,
-        joinedAt: Date.now()
-      }));
-
+      saveRecentMatch(partner, sessionId);
       playBeep('match');
+      triggerHapticFeedback([50, 50, 100]);
 
       document.getElementById('radarView').classList.add('hidden');
       document.getElementById('radarView').classList.remove('flex');
@@ -1703,26 +3060,40 @@
       document.getElementById('strangerTagPill').innerHTML = `<i class="fa-solid fa-user-check text-[10px]"></i> 100% Real Human • ${partner.gender || 'Pinoy'}`;
       document.getElementById('strangerAvatar').innerText = name.charAt(0).toUpperCase();
 
+      updateVerificationBadgeUI();
+
       const msgBox = document.getElementById('chatMessages');
       msgBox.innerHTML = `
         <div class="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-800/40 text-center text-xs text-emerald-200">
           <i class="fa-solid fa-shield-heart mr-1 text-emerald-400"></i>
-          Matched with <strong>${escapeHtml(name)}</strong> from ${escapeHtml(partner.location || 'PH')}! 100% Human verified.
+          Connected with <strong>${escapeHtml(name)}</strong> from ${escapeHtml(partner.location || 'PH')}! 100% Human verified.
         </div>
       `;
 
       const { db, appId, userId } = window.esmeringle;
       if (!db) return;
 
-      const { doc, collection, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+      const { doc, collection, onSnapshot, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
       const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+
+      try {
+        await updateDoc(sessionRef, { status: 'active' });
+      } catch(e){}
 
       const unsubSession = onSnapshot(sessionRef, (snap) => {
         const data = snap.data();
         if (!data) return;
 
-        if (data.status === 'ended') {
-          handlePartnerLeft();
+        if (data.status === 'disconnected') {
+          handlePartnerDisconnected();
+        } else if (data.status === 'active') {
+          document.getElementById('strangerPresenceDot').className = 'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-datingdark-900 rounded-full';
+          document.getElementById('strangerStatusText').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Live 1-on-1 Blind Date`;
+          document.getElementById('strangerLeftNotice').classList.add('hidden');
+        }
+
+        if (data.handles) {
+          checkHandlesSync(data.handles);
         }
 
         const typingBox = document.getElementById('typingIndicator');
@@ -1744,6 +3115,8 @@
         });
 
         msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+        window.esmeringle.msgCount = msgs.length;
+        updateChemistryMeter(msgs.length);
 
         msgs.forEach(msg => {
           const isMe = msg.senderId === userId;
@@ -1751,13 +3124,16 @@
         });
       }, (err) => console.warn("Messages stream error:", err));
       window.esmeringle.unsubs.push(unsubMsgs);
+
+      if (window.listenForIncomingCalls) {
+        window.listenForIncomingCalls(sessionId);
+      }
     }
 
-    function handlePartnerLeft() {
-      window.esmeringle.chatConnected = false;
-      localStorage.removeItem('esmeringle_active_session'); // Clear session
-      document.getElementById('strangerPresenceDot').className = 'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 border-2 border-datingdark-900 rounded-full';
-      document.getElementById('strangerStatusText').innerHTML = `<span class="text-rose-400 font-semibold"><i class="fa-solid fa-heart-crack mr-1"></i>Date Left</span>`;
+    function handlePartnerDisconnected() {
+      hangUpCall(false);
+      document.getElementById('strangerPresenceDot').className = 'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-amber-500 border-2 border-datingdark-900 rounded-full';
+      document.getElementById('strangerStatusText').innerHTML = `<span class="text-amber-400 font-semibold"><i class="fa-solid fa-plug-circle-exclamation mr-1"></i>Temporarily Away</span>`;
       document.getElementById('strangerLeftNotice').classList.remove('hidden');
       document.getElementById('typingIndicator').classList.add('hidden');
       playBeep('disconnect');
@@ -1786,6 +3162,7 @@
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       const imagePayload = window.esmeringle.pendingImageBase64;
+      const isViewOnce = window.esmeringle.isViewOncePending;
 
       if (!text && !imagePayload) return;
       if (!window.esmeringle.chatConnected) return;
@@ -1794,6 +3171,7 @@
       input.value = '';
       cancelImageUpload();
       playBeep('sent');
+      triggerHapticFeedback([15]);
 
       try {
         const { collection, addDoc, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
@@ -1803,12 +3181,14 @@
           senderName: myNickname,
           text: text,
           imageUrl: imagePayload || null,
+          audioUrl: null,
+          viewOnce: isViewOnce,
           reactions: {},
           createdAt: Date.now()
         });
 
         const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-        updateDoc(sessionRef, { typing: null });
+        updateDoc(sessionRef, { typing: null, status: 'active' });
       } catch (err) {
         console.error("Error sending 1on1 message:", err);
       }
@@ -1823,6 +3203,7 @@
 
     function sendHeartSpark(e) {
       playBeep('spark');
+      triggerHapticFeedback([30]);
       const container = document.getElementById('floatingHeartsContainer');
       const heart = document.createElement('div');
       heart.className = 'floating-sparkle text-rosebrand-400 text-2xl';
@@ -1853,6 +3234,7 @@
           senderName: myNickname,
           text: caption,
           imageUrl: imgUrl,
+          audioUrl: null,
           reactions: {},
           createdAt: Date.now()
         });
@@ -1873,7 +3255,6 @@
       playBeep('click');
     }
 
-    // ================= RENDER MESSAGES WITH EMOJI REACTIONS =================
     const REACT_EMOJIS = ['❤️', '🔥', '😂', '😍', '🥺', '👍'];
 
     function buildReactionsPill(reactions = {}, msgId, sessionId, isGroup = false) {
@@ -1888,12 +3269,12 @@
         html += `
           <button 
             type="button" 
-            onclick="toggleReaction('${sessionId}', '${msgId}', '${emo}', ${isGroup})"
+            onclick="toggleReaction('${sessionId}', '${msgId}', '${emo}', ${isGroup})" 
             class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border transition cursor-pointer ${
               didIReact 
                 ? 'bg-rosebrand-500/25 border-rosebrand-400 text-rosebrand-300 font-bold shadow-sm' 
                 : 'bg-datingdark-900/80 border-datingdark-border text-slate-300 hover:border-slate-500'
-            }"
+            }" 
             title="${users.length} reaction(s)"
           >
             <span>${emo}</span>
@@ -1934,19 +3315,39 @@
       const pickerHtml = buildReactionPickerBar(msg.id, window.esmeringle.sessionId, false, isMe);
 
       let contentHtml = '';
-      if (msg.imageUrl) {
+      if (msg.audioUrl) {
         contentHtml = `
-          <div class="rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/40">
-            <img src="${msg.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl" alt="Uploaded photo" />
+          <div class="flex items-center gap-2 py-1">
+            <audio controls src="${msg.audioUrl}" class="h-8 max-w-[210px]"></audio>
+            <span class="text-[10px] text-rosebrand-200"><i class="fa-solid fa-microphone mr-1"></i>Voice Memo</span>
           </div>
-          ${msg.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(msg.text)}</p>` : ''}
         `;
+      } else if (msg.imageUrl) {
+        if (msg.viewOnce) {
+          const viewOnceContainerId = `vo-wrap-${msg.id}`;
+          contentHtml = `
+            <div id="${viewOnceContainerId}" class="relative rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/50 cursor-pointer" onclick="revealViewOnceImage('${msg.id}', '${viewOnceContainerId}')">
+              <img src="${msg.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl blur-xl brightness-50 transition duration-300" alt="View Once Photo" />
+              <div class="view-once-overlay absolute inset-0 flex flex-col items-center justify-center gap-1 text-white bg-black/40">
+                <i class="fa-regular fa-eye text-lg text-rosebrand-400"></i>
+                <span class="text-[10px] font-bold">Tap to view photo (6s)</span>
+              </div>
+            </div>
+            ${msg.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(msg.text)}</p>` : ''}
+          `;
+        } else {
+          contentHtml = `
+            <div class="rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/40">
+              <img src="${msg.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl" alt="Uploaded photo" />
+            </div>
+            ${msg.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(msg.text)}</p>` : ''}
+          `;
+        }
       } else {
         contentHtml = `<p class="text-xs sm:text-sm break-words">${escapeHtml(msg.text)}</p>`;
       }
 
       if (!msgWrapper) {
-        // New Message
         msgWrapper = document.createElement('div');
         msgWrapper.id = msgElemId;
         msgWrapper.className = `group relative flex flex-col msg-anim ${isMe ? 'items-end self-end' : 'items-start self-start'} max-w-[85%]`;
@@ -1956,6 +3357,7 @@
             <span class="font-bold ${isMe ? 'text-rosebrand-400' : 'text-slate-300'}">${isMe ? 'You' : escapeHtml(msg.senderName || 'Match')}</span>
             <span>•</span>
             <span>${timeStr}</span>
+            ${isMe ? '<span class="text-rosebrand-400 font-bold ml-0.5">✓✓</span>' : ''}
           </div>
           <div class="relative px-3.5 py-2.5 rounded-2xl ${isMe ? 'bg-gradient-to-r from-rosebrand-600 to-heart-pink text-white rounded-tr-none shadow-glow-heart' : 'bg-datingdark-800 text-slate-200 border border-datingdark-border rounded-tl-none'}">
             ${pickerHtml}
@@ -1966,7 +3368,6 @@
         container.appendChild(msgWrapper);
         container.scrollTop = container.scrollHeight;
       } else {
-        // Update existing message (e.g. reaction updated)
         const reactionsBox = msgWrapper.querySelector('.reactions-box');
         if (reactionsBox) reactionsBox.innerHTML = reactionsHtml;
       }
@@ -1974,11 +3375,13 @@
 
     async function nextPartnerPrompt() {
       playBeep('click');
-      await endCurrentSessionNotify();
+      hangUpCall(true);
+      cleanChatSubscriptions();
+      window.esmeringle.sessionId = null;
+      window.esmeringle.chatConnected = false;
       startLive1on1Queue();
     }
 
-    // ================= CONFIRM EXIT DIALOG MODAL HANDLERS =================
     function openConfirmExitModal() {
       playBeep('click');
       const modal = document.getElementById('confirmExitModal');
@@ -2000,31 +3403,28 @@
       await disconnectChat();
     }
 
-    // DISCONNECT / EXIT BUTTON: COMPLETELY ENDS SESSION (NO RECONNECTING NEEDED)
     async function disconnectChat() {
       playBeep('click');
-      await endCurrentSessionNotify();
-      switchToSetup();
-      showToast('Chat ended. Session cleared!');
-    }
-
-    async function endCurrentSessionNotify() {
-      // Clear persistent active session from localStorage so user won't auto-reconnect
-      localStorage.removeItem('esmeringle_active_session');
-
-      const { db, appId, sessionId } = window.esmeringle;
-      if (db && sessionId) {
-        try {
-          const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-          const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-          await updateDoc(sessionRef, { status: 'ended' });
-        } catch(e){}
+      hangUpCall(true);
+      
+      if (window.esmeringle.currentPartner && window.esmeringle.sessionId) {
+        saveRecentMatch(window.esmeringle.currentPartner, window.esmeringle.sessionId);
+        
+        const { db, appId, sessionId } = window.esmeringle;
+        if (db && sessionId) {
+          try {
+            const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+            await updateDoc(sessionRef, { status: 'disconnected' });
+          } catch(e){}
+        }
       }
-      cleanChatSubscriptions();
-      window.esmeringle.sessionId = null;
+
+      switchToSetup();
+      showToast('Chat paused. You can reconnect anytime!');
     }
 
-    // ================= GROUP CHAT LOUNGE =================
+    /* SINGLES LOUNGE ENTER / EXIT LOGIC WITH CLEAR CHAT */
     async function enterGroupLounge() {
       cleanChatSubscriptions();
       document.getElementById('setupView').classList.add('hidden');
@@ -2062,6 +3462,20 @@
       }, (err) => console.warn("Lounge stream notice:", err));
 
       window.esmeringle.unsubs.push(unsubLounge);
+    }
+
+    function leaveGroupLounge() {
+      cleanChatSubscriptions();
+      
+      const groupMsgs = document.getElementById('groupMessages');
+      if (groupMsgs) {
+        groupMsgs.innerHTML = '';
+      }
+      cancelGroupImageUpload();
+
+      playBeep('click');
+      switchToSetup();
+      showToast('Left Singles Lounge. Chat history cleared.');
     }
 
     function renderOrUpdateGroupMessage(item, isMe) {
@@ -2175,7 +3589,6 @@
         .replace(/'/g, '&#039;');
     }
 
-    /* Assign globally to ensure inline onclick handlers work */
     Object.assign(window, {
       switchToSetup,
       toggleLoversMusic,
@@ -2206,11 +3619,36 @@
       joinChatSession,
       cleanChatSubscriptions,
       enterGroupLounge,
+      leaveGroupLounge,
       showToast,
       handleDeviceImageSelect,
       cancelImageUpload,
       handleGroupDeviceImageSelect,
-      cancelGroupImageUpload
+      cancelGroupImageUpload,
+      reconnectRecentMatch,
+      clearRecentMatch,
+      keepAndTransferToInbox,
+      dislikeMatchPrompt,
+      openInboxModal,
+      closeInboxModal,
+      removeInboxItem,
+      openInboxChat,
+      toggleVoiceRecording,
+      cancelVoiceRecording,
+      toggleKiligGameTray,
+      sendGamePrompt,
+      toggleViewOnceState,
+      revealViewOnceImage,
+      renderGameCategory,
+      openDateSpotsModal,
+      closeDateSpotsModal,
+      shareSpotToChat,
+      openHandleSwapModal,
+      closeHandleSwapModal,
+      submitSocialHandle,
+      openSelfieVerificationModal,
+      closeSelfieModal,
+      captureLiveSelfie
     });
 
     window.addEventListener('load', () => {
@@ -2227,9 +3665,8 @@
       }
     });
 
-    // NOTE: On accidental close, we do NOT delete or end the session so the user can reconnect.
-    // Reconnection is only prevented when they click the 'Exit' button and confirm Yes.
     window.addEventListener('beforeunload', () => {
+      hangUpCall(true);
       removeQueueTicket();
     });
   </script>
