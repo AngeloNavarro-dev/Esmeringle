@@ -137,6 +137,16 @@
       100% { opacity: 0; transform: translateY(-70px) scale(1.3); }
     }
 
+    /* Treat animation */
+    @keyframes bounceTreat {
+      0% { opacity: 0; transform: translateY(40px) scale(0.5); }
+      50% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-90px) scale(1); }
+    }
+    .animate-treat-bounce {
+      animation: bounceTreat 1.8s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+    }
+
     input[type=range].romantic-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -247,7 +257,7 @@
           >
         </div>
 
-        <button onclick="openSafetyModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 border border-datingdark-border flex items-center justify-center text-slate-300 hover:text-white hover:border-rosebrand-500 transition" title="Safe Dating & Rules">
+        <button onclick="openSafetyModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 border border-datingdark-border flex items-center justify-center text-slate-300 hover:text-white hover:border-rosebrand-500 transition cursor-pointer" title="Safe Dating & Rules">
           <i class="fa-solid fa-shield-heart text-xs text-rosebrand-400"></i>
         </button>
       </div>
@@ -304,7 +314,7 @@
             <i class="fa-solid fa-rotate-right"></i>
             <span>Reconnect</span>
           </button>
-          <button onclick="clearRecentMatch()" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs" title="Dismiss recent match">
+          <button onclick="clearRecentMatch()" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs cursor-pointer" title="Dismiss recent match">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -312,11 +322,11 @@
 
       <!-- Mode Selector -->
       <div class="w-full bg-datingdark-900/95 p-1 rounded-2xl border border-datingdark-border flex mb-4 shadow-inner">
-        <button id="mode1on1Btn" onclick="setMode('1on1')" class="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition duration-200 active-dating-pill">
+        <button id="mode1on1Btn" onclick="setMode('1on1')" class="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition duration-200 active-dating-pill cursor-pointer">
           <i class="fa-solid fa-heart-pulse"></i>
           1-on-1 Blind Date
         </button>
-        <button id="modeGroupBtn" onclick="setMode('group')" class="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200">
+        <button id="modeGroupBtn" onclick="setMode('group')" class="flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200 cursor-pointer">
           <i class="fa-solid fa-martini-glass-citrus"></i>
           Singles Lounge (Tambayan)
         </button>
@@ -343,10 +353,47 @@
           >
           <div class="flex items-center justify-between mt-1">
             <p id="nicknameNotice" class="text-[11px] text-slate-500">Must be 3-20 characters with readable letters.</p>
-            <button type="button" onclick="openSelfieVerificationModal()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold">
+            <button type="button" onclick="openSelfieVerificationModal()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold cursor-pointer">
               <i class="fa-solid fa-shield-halved text-xs"></i>
               <span id="verifyBadgeSetup">Verify Selfie 📸</span>
             </button>
+          </div>
+        </div>
+
+        <!-- Mascot & Zodiac Sign Customizers -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-300 block mb-1.5 flex items-center gap-1">
+              <span>🐾</span> Pick Your Vibe Mascot:
+            </span>
+            <div class="grid grid-cols-4 gap-1.5">
+              <button type="button" onclick="selectMascot('🐱', this)" class="mascot-opt py-1.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-sm active-dating-pill transition cursor-pointer">🐱 Cat</button>
+              <button type="button" onclick="selectMascot('🐶', this)" class="mascot-opt py-1.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-sm transition cursor-pointer">🐶 Dog</button>
+              <button type="button" onclick="selectMascot('🐣', this)" class="mascot-opt py-1.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-sm transition cursor-pointer">🐣 Chick</button>
+              <button type="button" onclick="selectMascot('🦊', this)" class="mascot-opt py-1.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-sm transition cursor-pointer">🦊 Fox</button>
+            </div>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-slate-300 block mb-1.5 flex items-center gap-1">
+              <span>🔮</span> Your Zodiac Sign:
+            </span>
+            <div class="relative">
+              <select id="zodiacSelect" onchange="window.esmeringle.myZodiac = this.value" class="w-full appearance-none bg-datingdark-900/90 border border-datingdark-border rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-rosebrand-500 cursor-pointer">
+                <option value="Aries ♈">Aries ♈</option>
+                <option value="Taurus ♉">Taurus ♉</option>
+                <option value="Gemini ♊">Gemini ♊</option>
+                <option value="Cancer ♋">Cancer ♋</option>
+                <option value="Leo ♌">Leo ♌</option>
+                <option value="Virgo ♍">Virgo ♍</option>
+                <option value="Libra ♎">Libra ♎</option>
+                <option value="Scorpio ♏" selected>Scorpio ♏</option>
+                <option value="Sagittarius ♐">Sagittarius ♐</option>
+                <option value="Capricorn ♑">Capricorn ♑</option>
+                <option value="Aquarius ♒">Aquarius ♒</option>
+                <option value="Pisces ♓">Pisces ♓</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+            </div>
           </div>
         </div>
 
@@ -359,16 +406,16 @@
             <span class="text-slate-500 font-normal">Intent tag</span>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" onclick="selectIntent('Serious Dating 💍', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 active-dating-pill transition">
+            <button type="button" onclick="selectIntent('Serious Dating 💍', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 active-dating-pill transition cursor-pointer">
               <span>💍</span> Serious Dating
             </button>
-            <button type="button" onclick="selectIntent('Coffee & Kwentuhan ☕', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition">
+            <button type="button" onclick="selectIntent('Coffee & Kwentuhan ☕', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition cursor-pointer">
               <span>☕</span> Coffee Date
             </button>
-            <button type="button" onclick="selectIntent('Flirt & Spark ✨', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition">
+            <button type="button" onclick="selectIntent('Flirt & Spark ✨', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition cursor-pointer">
               <span>✨</span> Flirt & Spark
             </button>
-            <button type="button" onclick="selectIntent('Gaming Duo 🎮', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition">
+            <button type="button" onclick="selectIntent('Gaming Duo 🎮', this)" class="intent-btn py-2 px-2.5 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 hover:border-rosebrand-500 transition cursor-pointer">
               <span>🎮</span> Gamer Duo
             </button>
           </div>
@@ -378,13 +425,13 @@
           <div>
             <span class="text-xs font-semibold text-slate-300 block mb-1.5">I am a:</span>
             <div class="grid grid-cols-3 gap-1.5">
-              <button type="button" onclick="selectGender('myGender', 'Male', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 active-dating-pill transition">
+              <button type="button" onclick="selectGender('myGender', 'Male', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 active-dating-pill transition cursor-pointer">
                 <span>👦</span> Guy
               </button>
-              <button type="button" onclick="selectGender('myGender', 'Female', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition">
+              <button type="button" onclick="selectGender('myGender', 'Female', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
                 <span>👧</span> Girl
               </button>
-              <button type="button" onclick="selectGender('myGender', 'LGBTQ+', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition">
+              <button type="button" onclick="selectGender('myGender', 'LGBTQ+', this)" class="gender-btn myGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
                 <span>🌈</span> Pride
               </button>
             </div>
@@ -393,13 +440,13 @@
           <div>
             <span class="text-xs font-semibold text-slate-300 block mb-1.5">Interested in meeting:</span>
             <div class="grid grid-cols-3 gap-1.5">
-              <button type="button" onclick="selectGender('targetGender', 'Female', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition">
+              <button type="button" onclick="selectGender('targetGender', 'Female', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
                 <span>💃</span> Girls
               </button>
-              <button type="button" onclick="selectGender('targetGender', 'Male', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition">
+              <button type="button" onclick="selectGender('targetGender', 'Male', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 transition cursor-pointer">
                 <span>🕺</span> Guys
               </button>
-              <button type="button" onclick="selectGender('targetGender', 'Everyone', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 active-dating-pill transition">
+              <button type="button" onclick="selectGender('targetGender', 'Everyone', this)" class="target-btn targetGender-opt py-2 rounded-xl border border-datingdark-border bg-datingdark-900/60 text-xs font-medium flex items-center justify-center gap-1 active-dating-pill transition cursor-pointer">
                 <span>✨</span> Everyone
               </button>
             </div>
@@ -415,7 +462,7 @@
             <span class="text-slate-500 font-normal">For local dates</span>
           </div>
           <div class="relative">
-            <select id="locationSelect" class="w-full appearance-none bg-datingdark-900/90 border border-datingdark-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-rosebrand-500 transition cursor-pointer">
+            <select id="locationSelect" onchange="window.esmeringle.location = this.value" class="w-full appearance-none bg-datingdark-900/90 border border-datingdark-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-rosebrand-500 transition cursor-pointer">
               <option value="Metro Manila (BGC / Makati / QC)">🏙️ Metro Manila (BGC / Makati / QC / Ortigas)</option>
               <option value="Cebu & Visayas">🏝️ Cebu & Central Visayas</option>
               <option value="Davao & Mindanao">🦅 Davao & Southern Mindanao</option>
@@ -447,7 +494,7 @@
               class="flex-1 bg-datingdark-900/90 border border-datingdark-border rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rosebrand-500"
               onkeydown="if(event.key === 'Enter'){ event.preventDefault(); addCustomTopic(); }"
             >
-            <button onclick="addCustomTopic()" class="px-3.5 py-2 bg-datingdark-800 border border-datingdark-border rounded-xl text-rosebrand-400 hover:text-white hover:bg-rosebrand-600 transition text-xs font-bold">
+            <button type="button" onclick="addCustomTopic()" class="px-3.5 py-2 bg-datingdark-800 border border-datingdark-border rounded-xl text-rosebrand-400 hover:text-white hover:bg-rosebrand-600 transition text-xs font-bold cursor-pointer">
               <i class="fa-solid fa-plus"></i>
             </button>
           </div>
@@ -486,7 +533,7 @@
         <span>Guaranteed 100% human-to-human. No fake bot chats.</span>
       </div>
 
-      <button onclick="cancelMatching()" class="px-6 py-2.5 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 hover:border-rosebrand-500/40 text-xs font-bold transition flex items-center gap-2">
+      <button onclick="cancelMatching()" class="px-6 py-2.5 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 hover:border-rosebrand-500/40 text-xs font-bold transition flex items-center gap-2 cursor-pointer">
         <i class="fa-solid fa-xmark"></i> Cancel Search
       </button>
     </div>
@@ -521,13 +568,13 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <button id="toggleMicBtn" onclick="toggleAudioTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90" title="Mute/Unmute Mic">
+          <button id="toggleMicBtn" onclick="toggleAudioTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90 cursor-pointer" title="Mute/Unmute Mic">
             <i id="micIcon" class="fa-solid fa-microphone"></i>
           </button>
-          <button id="toggleCamBtn" onclick="toggleVideoTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90" title="Turn Camera On/Off">
+          <button id="toggleCamBtn" onclick="toggleVideoTrack()" class="w-12 h-12 rounded-full bg-datingdark-800 border border-datingdark-border text-slate-200 hover:text-white flex items-center justify-center transition active:scale-90 cursor-pointer" title="Turn Camera On/Off">
             <i id="camIcon" class="fa-solid fa-video"></i>
           </button>
-          <button onclick="hangUpCall()" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition active:scale-90 shadow-glow-pink" title="End Call">
+          <button onclick="hangUpCall(true)" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition active:scale-90 shadow-glow-pink cursor-pointer" title="End Call">
             <i class="fa-solid fa-phone-slash"></i>
           </button>
         </div>
@@ -545,10 +592,10 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="rejectIncomingCall()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 text-xs font-semibold border border-datingdark-border">
+          <button onclick="rejectIncomingCall()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 text-xs font-semibold border border-datingdark-border cursor-pointer">
             Decline
           </button>
-          <button onclick="acceptIncomingCall()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold shadow-lg flex items-center gap-1.5">
+          <button onclick="acceptIncomingCall()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold shadow-lg flex items-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-phone"></i> Answer
           </button>
         </div>
@@ -566,6 +613,7 @@
           <div>
             <div class="flex items-center gap-2">
               <span id="strangerNameLabel" class="font-extrabold text-sm text-slate-100">Your Match</span>
+              <span id="partnerMascotTag" class="text-xs" title="Match Vibe Pet">🐱</span>
               <span id="strangerTagPill" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-semibold flex items-center gap-1">
                 <i class="fa-solid fa-user-check text-[9px]"></i> 100% Real Human
               </span>
@@ -583,28 +631,28 @@
         <div class="flex items-center gap-1.5 sm:gap-2">
           
           <!-- HEART BUTTON (You want your match -> Transfer to Inbox) -->
-          <button onclick="keepAndTransferToInbox()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 via-heart-pink to-rosebrand-500 hover:from-rosebrand-500 hover:to-heart-pink text-white font-extrabold text-xs flex items-center gap-1.5 shadow-glow-heart active:scale-95 transition" title="Keep Match & Move Conversation to Inbox">
+          <button onclick="keepAndTransferToInbox()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 via-heart-pink to-rosebrand-500 hover:from-rosebrand-500 hover:to-heart-pink text-white font-extrabold text-xs flex items-center gap-1.5 shadow-glow-heart active:scale-95 transition cursor-pointer" title="Keep Match & Move Conversation to Inbox">
             <i class="fa-solid fa-heart"></i>
             <span class="hidden sm:inline">Keep Match</span>
           </button>
 
           <!-- DISLIKE / PASS BUTTON (You don't like match -> Next date) -->
-          <button onclick="dislikeMatchPrompt()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-400 hover:text-amber-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Pass / Dislike Match (Find Next Date)">
+          <button onclick="dislikeMatchPrompt()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-400 hover:text-amber-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Pass / Dislike Match (Find Next Date)">
             <i class="fa-solid fa-thumbs-down text-xs"></i>
           </button>
 
           <!-- Swap Social Handles Button -->
-          <button onclick="openHandleSwapModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-fuchsia-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Mutual IG/Telegram Reveal">
+          <button onclick="openHandleSwapModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-fuchsia-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Mutual IG/Telegram Reveal">
             <i class="fa-brands fa-instagram text-xs"></i>
           </button>
 
-          <button onclick="initiateCall(false)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Start Voice Call">
+          <button onclick="initiateCall(false)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Start Voice Call">
             <i class="fa-solid fa-phone text-xs"></i>
           </button>
-          <button onclick="initiateCall(true)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Start Video Call">
+          <button onclick="initiateCall(true)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Start Video Call">
             <i class="fa-solid fa-video text-xs"></i>
           </button>
-          <button onclick="sendHeartSpark(event)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90" title="Send a heart flutter">
+          <button onclick="sendHeartSpark(event)" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-rosebrand-500/20 text-rosebrand-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Send a heart flutter">
             <i class="fa-solid fa-heart text-sm animate-pulse"></i>
           </button>
           <button onclick="openConfirmExitModal()" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs font-bold text-rose-400 border border-rose-500/30 flex items-center gap-1.5 transition cursor-pointer" title="Leave Date">
@@ -614,28 +662,44 @@
         </div>
       </div>
 
-      <!-- Progressive Connection / Kilig Progress Meter -->
+      <!-- Progressive Connection Meter & Tamagotchi Love Plant Status -->
       <div class="px-4 py-1.5 bg-datingdark-900/60 border-b border-datingdark-border flex items-center justify-between text-[10px]">
         <span class="text-slate-400 flex items-center gap-1">
           <i class="fa-solid fa-fire-flame-curved text-rosebrand-400"></i> Spark Meter:
           <strong id="chemistryStatusText" class="text-rosebrand-300 font-bold">Getting to Know (Level 1)</strong>
         </span>
-        <div class="w-24 bg-datingdark-800 h-1.5 rounded-full overflow-hidden border border-datingdark-border">
-          <div id="chemistryProgressBar" class="h-full bg-gradient-to-r from-rosebrand-500 to-heart-pink transition-all duration-300" style="width: 15%;"></div>
+        <div class="flex items-center gap-2">
+          <!-- Tamagotchi Love Plant Widget -->
+          <div id="lovePlantWidget" class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-bold cursor-pointer" onclick="showToast('Your shared Love Plant! It grows as you exchange kwentuhan 🌱')">
+            <span id="lovePlantIcon">🌱</span>
+            <span id="lovePlantStage" class="text-[9px]">Sprout</span>
+          </div>
+          <div class="w-20 bg-datingdark-800 h-1.5 rounded-full overflow-hidden border border-datingdark-border">
+            <div id="chemistryProgressBar" class="h-full bg-gradient-to-r from-rosebrand-500 to-heart-pink transition-all duration-300" style="width: 15%;"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Icebreaker chips -->
+      <!-- Icebreaker chips & Cute Interactive Actions Bar -->
       <div class="px-3 py-2 bg-datingdark-850/80 border-b border-datingdark-border flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
         <span class="text-rosebrand-300 flex items-center gap-1 whitespace-nowrap pl-1 font-semibold">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Kilig Starters:
         </span>
-        <button onclick="openDateSpotsModal()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:border-amber-400 font-bold transition flex items-center gap-1">
+        <button onclick="openDateSpotsModal()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:border-amber-400 font-bold transition flex items-center gap-1 cursor-pointer">
           <i class="fa-solid fa-mug-hot"></i> Coffee Date?
         </button>
-        <button onclick="sendIcebreaker('Coffee date or late night drive? ☕🚗')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">Coffee or Night Drive?</button>
-        <button onclick="sendIcebreaker('Ano love language mo lods? ✨')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">Love language?</button>
-        <button onclick="sendIcebreaker('ASL and location sa Pinas? 👋')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition">ASL please?</button>
+        <button onclick="toggleVirtualTreatTray()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/30 text-fuchsia-300 hover:border-fuchsia-400 font-bold transition flex items-center gap-1 cursor-pointer">
+          <span>🧋</span> Send Treat
+        </button>
+        <button onclick="toggleRpsTray()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-rosebrand-500/15 border border-rosebrand-500/30 text-rosebrand-300 hover:border-rosebrand-400 font-bold transition flex items-center gap-1 cursor-pointer">
+          <span>✌️</span> Bato-Bato-Pick
+        </button>
+        <button onclick="showZodiacHoroscopeCard()" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 hover:border-purple-400 font-bold transition flex items-center gap-1 cursor-pointer">
+          <span>🔮</span> Zodiac Match
+        </button>
+        <button onclick="sendIcebreaker('Coffee date or late night drive? ☕🚗')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition cursor-pointer">Coffee or Night Drive?</button>
+        <button onclick="sendIcebreaker('Ano love language mo lods? ✨')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition cursor-pointer">Love language?</button>
+        <button onclick="sendIcebreaker('ASL and location sa Pinas? 👋')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-datingdark-900 border border-datingdark-border text-slate-300 hover:border-rosebrand-500 hover:text-white transition cursor-pointer">ASL please?</button>
       </div>
 
       <!-- Messages Box -->
@@ -648,20 +712,21 @@
           <span>Partner disconnected. Click Reconnect or Save to Inbox!</span>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="keepAndTransferToInbox()" class="px-3 py-1 rounded-xl bg-rosebrand-600 hover:bg-rosebrand-500 text-white font-bold text-xs transition flex items-center gap-1">
+          <button onclick="keepAndTransferToInbox()" class="px-3 py-1 rounded-xl bg-rosebrand-600 hover:bg-rosebrand-500 text-white font-bold text-xs transition flex items-center gap-1 cursor-pointer">
             <i class="fa-solid fa-heart"></i> Move to Inbox
           </button>
-          <button onclick="reconnectRecentMatch()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-rosebrand-300 border border-rosebrand-500/40 font-bold text-xs transition flex items-center gap-1">
+          <button onclick="reconnectRecentMatch()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-rosebrand-300 border border-rosebrand-500/40 font-bold text-xs transition flex items-center gap-1 cursor-pointer">
             <i class="fa-solid fa-rotate-right"></i> Reconnect
           </button>
-          <button onclick="nextPartnerPrompt()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs transition">
+          <button onclick="nextPartnerPrompt()" class="px-3 py-1 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs transition cursor-pointer">
             Next Date
           </button>
         </div>
       </div>
 
-      <!-- Typing Indicator -->
+      <!-- Typing Indicator with Mascot Animation -->
       <div id="typingIndicator" class="hidden px-4 py-1.5 text-xs text-rosebrand-300 italic flex items-center gap-2 bg-datingdark-900/60">
+        <span id="typingMascotIcon" class="text-sm">🐱</span>
         <div class="flex gap-1 items-center">
           <span class="w-1.5 h-1.5 rounded-full bg-rosebrand-400 animate-bounce"></span>
           <span class="w-1.5 h-1.5 rounded-full bg-heart-pink animate-bounce" style="animation-delay: 0.2s"></span>
@@ -676,19 +741,19 @@
           <span class="w-3 h-3 rounded-full bg-rosebrand-500 animate-recording"></span>
           <span>Recording Voice Note... (<span id="voiceRecordTimer">0s</span>)</span>
         </div>
-        <button onclick="cancelVoiceRecording()" class="text-slate-400 hover:text-white text-xs underline">Cancel</button>
+        <button onclick="cancelVoiceRecording()" class="text-slate-400 hover:text-white text-xs underline cursor-pointer">Cancel</button>
       </div>
 
       <!-- Pending Image Upload Preview Bar -->
       <div id="imagePreviewContainer" class="hidden px-4 py-2 bg-datingdark-850 border-t border-datingdark-border items-center gap-3">
         <div class="relative inline-block">
           <img id="imagePreviewImg" class="w-14 h-14 object-cover rounded-xl border border-rosebrand-500/40" src="" alt="preview">
-          <button type="button" onclick="cancelImageUpload()" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] shadow">
+          <button type="button" onclick="cancelImageUpload()" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] shadow cursor-pointer">
             &times;
           </button>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <button type="button" id="viewOnceToggleBtn" onclick="toggleViewOnceState()" class="px-2.5 py-1 rounded-lg border border-datingdark-border bg-datingdark-900 text-slate-300 text-[11px] font-semibold flex items-center gap-1 hover:border-rosebrand-500">
+          <button type="button" id="viewOnceToggleBtn" onclick="toggleViewOnceState()" class="px-2.5 py-1 rounded-lg border border-datingdark-border bg-datingdark-900 text-slate-300 text-[11px] font-semibold flex items-center gap-1 hover:border-rosebrand-500 cursor-pointer">
             <i class="fa-regular fa-eye text-xs"></i>
             <span id="viewOnceStatusLabel">View-Once: OFF</span>
           </button>
@@ -696,15 +761,50 @@
         </div>
       </div>
 
+      <!-- Bato-Bato-Pick (RPS) Tray -->
+      <div id="rpsTray" class="hidden p-3 bg-datingdark-900 border-t border-datingdark-border flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span class="font-bold text-rosebrand-300">✌️ Bato-Bato-Pick: Pick your move!</span>
+          <button onclick="toggleRpsTray()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="playRpsMove('Bato 🪨')" class="py-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-sm font-bold text-white transition cursor-pointer">🪨 Bato</button>
+          <button onclick="playRpsMove('Papel 📄')" class="py-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-sm font-bold text-white transition cursor-pointer">📄 Papel</button>
+          <button onclick="playRpsMove('Gunting ✂️')" class="py-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-sm font-bold text-white transition cursor-pointer">✂️ Gunting</button>
+        </div>
+      </div>
+
+      <!-- Pinoy Merienda Virtual Treat Tray -->
+      <div id="virtualTreatTray" class="hidden p-3 bg-datingdark-900 border-t border-datingdark-border flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span class="font-bold text-fuchsia-300">🧋 Send Pinoy Virtual Merienda</span>
+          <button onclick="toggleVirtualTreatTray()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-xs">
+          <button onclick="sendVirtualTreat('Milk Tea', '🧋')" class="p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-center transition cursor-pointer">
+            <span class="text-xl block">🧋</span><span class="text-[10px] text-slate-200">Milk Tea</span>
+          </button>
+          <button onclick="sendVirtualTreat('Tahô', '🥣')" class="p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-center transition cursor-pointer">
+            <span class="text-xl block">🥣</span><span class="text-[10px] text-slate-200">Mainit na Tahô</span>
+          </button>
+          <button onclick="sendVirtualTreat('Fishball & Kwek-kwek', '🍢')" class="p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-center transition cursor-pointer">
+            <span class="text-xl block">🍢</span><span class="text-[10px] text-slate-200">Streetfood</span>
+          </button>
+          <button onclick="sendVirtualTreat('Pan de Sal & Kape', '☕')" class="p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-center transition cursor-pointer">
+            <span class="text-xl block">☕</span><span class="text-[10px] text-slate-200">Pan de Sal</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Categorized Mini-Games & Deep Talk Tray -->
       <div id="kiligGameTray" class="hidden p-3 bg-datingdark-900 border-t border-datingdark-border flex flex-col gap-2">
         <div class="flex items-center justify-between text-xs text-slate-400">
           <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
-            <button onclick="renderGameCategory('thisorthat')" id="tab-thisorthat" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">This or That</button>
-            <button onclick="renderGameCategory('ligaw')" id="tab-ligaw" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white">Ligaw & Kilig</button>
-            <button onclick="renderGameCategory('deeptalk')" id="tab-deeptalk" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white">Late Night Usap</button>
+            <button onclick="renderGameCategory('thisorthat')" id="tab-thisorthat" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-pointer">This or That</button>
+            <button onclick="renderGameCategory('ligaw')" id="tab-ligaw" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white cursor-pointer">Ligaw & Kilig</button>
+            <button onclick="renderGameCategory('deeptalk')" id="tab-deeptalk" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white cursor-pointer">Late Night Usap</button>
           </div>
-          <button onclick="toggleKiligGameTray()" class="text-slate-400 hover:text-white ml-2"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="toggleKiligGameTray()" class="text-slate-400 hover:text-white ml-2 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="gameDeckOptions" class="grid grid-cols-2 gap-2 text-xs">
           <!-- Dynamically populated prompts -->
@@ -715,22 +815,22 @@
       <div id="memePickerTray" class="hidden p-3 bg-datingdark-900 border-t border-datingdark-border flex flex-col gap-2">
         <div class="flex items-center justify-between text-xs text-slate-400">
           <span class="font-bold text-rosebrand-300"><i class="fa-solid fa-face-kiss-wink-heart mr-1 text-rosebrand-400"></i> Send Kilig & Dating Meme</span>
-          <button onclick="toggleMemePicker()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="toggleMemePicker()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="grid grid-cols-4 gap-2">
-          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=300&auto=format&fit=crop&q=60', 'Kinikilig Cat')" class="group relative rounded-xl overflow-hidden border border-datingdark-border hover:border-rosebrand-500">
+          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=300&auto=format&fit=crop&q=60', 'Kinikilig Cat')" class="group relative rounded-xl overflow-hidden border border-datingdark-border hover:border-rosebrand-500 cursor-pointer">
             <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=150&auto=format&fit=crop&q=60" class="w-full h-16 object-cover" alt="meme">
             <span class="absolute bottom-0 inset-x-0 bg-black/75 text-[9px] text-center text-white py-0.5 truncate">Kinilig 😻</span>
           </button>
-          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1534361960057-19889db9621e?w=300&auto=format&fit=crop&q=60', 'Side Eye Crush')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500">
+          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1534361960057-19889db9621e?w=300&auto=format&fit=crop&q=60', 'Side Eye Crush')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500 cursor-pointer">
             <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?w=150&auto=format&fit=crop&q=60" class="w-full h-16 object-cover" alt="meme">
             <span class="absolute bottom-0 inset-x-0 bg-black/75 text-[9px] text-center text-white py-0.5 truncate">Side eye 👀</span>
           </button>
-          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&auto=format&fit=crop&q=60', 'Chill Lang')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500">
+          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&auto=format&fit=crop&q=60', 'Chill Lang')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500 cursor-pointer">
             <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=60" class="w-full h-16 object-cover" alt="meme">
             <span class="absolute bottom-0 inset-x-0 bg-black/75 text-[9px] text-center text-white py-0.5 truncate">Chill lang ☕</span>
           </button>
-          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1574158622682-e40e69881006?w=300&auto=format&fit=crop&q=60', 'Cute Smug')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500">
+          <button type="button" onclick="sendMemeReaction('https://images.unsplash.com/photo-1574158622682-e40e69881006?w=300&auto=format&fit=crop&q=60', 'Cute Smug')" class="group relative rounded-lg overflow-hidden border border-datingdark-border hover:border-rosebrand-500 cursor-pointer">
             <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=150&auto=format&fit=crop&q=60" class="w-full h-16 object-cover" alt="meme">
             <span class="absolute bottom-0 inset-x-0 bg-black/75 text-[9px] text-center text-white py-0.5 truncate">Flirty 😼</span>
           </button>
@@ -804,7 +904,7 @@
           </div>
         </div>
 
-        <button onclick="leaveGroupLounge()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-xs font-semibold text-slate-300 border border-datingdark-border flex items-center gap-1.5 transition">
+        <button onclick="leaveGroupLounge()" class="px-3 py-1.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-xs font-semibold text-slate-300 border border-datingdark-border flex items-center gap-1.5 transition cursor-pointer">
           <i class="fa-solid fa-door-open"></i>
           <span>Exit Lounge</span>
         </button>
@@ -815,7 +915,7 @@
       <div id="groupImagePreviewContainer" class="hidden px-4 py-2 bg-datingdark-850 border-t border-datingdark-border items-center gap-3">
         <div class="relative inline-block">
           <img id="groupImagePreviewImg" class="w-14 h-14 object-cover rounded-xl border border-heart-pink/40" src="" alt="preview">
-          <button type="button" onclick="cancelGroupImageUpload()" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] shadow">
+          <button type="button" onclick="cancelGroupImageUpload()" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] shadow cursor-pointer">
             &times;
           </button>
         </div>
@@ -857,16 +957,14 @@
           <i class="fa-solid fa-heart-circle-check"></i>
           <span>Your Matches & Inbox</span>
         </div>
-        <button onclick="closeInboxModal()" class="text-slate-400 hover:text-white">
+        <button onclick="closeInboxModal()" class="text-slate-400 hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div id="inboxList" class="flex-1 overflow-y-auto space-y-3 my-4 pr-1">
-        <!-- Dynamically injected inbox items -->
-      </div>
+      <div id="inboxList" class="flex-1 overflow-y-auto space-y-3 my-4 pr-1"></div>
 
-      <button onclick="closeInboxModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs sm:text-sm transition">
+      <button onclick="closeInboxModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer">
         Close Inbox
       </button>
     </div>
@@ -880,7 +978,7 @@
           <i class="fa-brands fa-instagram"></i>
           <span>Mutual Social Handle Reveal</span>
         </div>
-        <button onclick="closeHandleSwapModal()" class="text-slate-400 hover:text-white">
+        <button onclick="closeHandleSwapModal()" class="text-slate-400 hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -894,14 +992,12 @@
           <label class="block text-xs font-semibold text-slate-400 mb-1">Your Instagram or Telegram (@username):</label>
           <input id="mySocialHandleInput" type="text" placeholder="@yourhandle" class="w-full bg-datingdark-850 border border-datingdark-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-fuchsia-500">
         </div>
-        <div id="partnerHandleBox" class="p-3 bg-datingdark-800 rounded-xl border border-datingdark-border text-xs text-slate-300 hidden">
-          <!-- Shown when mutual reveal occurs -->
-        </div>
+        <div id="partnerHandleBox" class="p-3 bg-datingdark-800 rounded-xl border border-datingdark-border text-xs text-slate-300 hidden"></div>
       </div>
 
       <div class="flex gap-2">
-        <button onclick="closeHandleSwapModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Cancel</button>
-        <button onclick="submitSocialHandle()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rosebrand-500 text-white font-bold text-xs shadow-md">Submit Handle</button>
+        <button onclick="closeHandleSwapModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+        <button onclick="submitSocialHandle()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rosebrand-500 text-white font-bold text-xs shadow-md cursor-pointer">Submit Handle</button>
       </div>
     </div>
   </div>
@@ -914,7 +1010,7 @@
           <i class="fa-solid fa-map-location-dot"></i>
           <span>Safe Public Meetup Spots</span>
         </div>
-        <button onclick="closeDateSpotsModal()" class="text-slate-400 hover:text-white">
+        <button onclick="closeDateSpotsModal()" class="text-slate-400 hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -923,11 +1019,9 @@
         Recommended safe spots based on location: <strong id="dateSpotsLocationLabel" class="text-amber-300">PH</strong>
       </p>
 
-      <div id="dateSpotsList" class="flex-1 overflow-y-auto space-y-2 mb-4">
-        <!-- Injected date spots -->
-      </div>
+      <div id="dateSpotsList" class="flex-1 overflow-y-auto space-y-2 mb-4"></div>
 
-      <button onclick="closeDateSpotsModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Close</button>
+      <button onclick="closeDateSpotsModal()" class="w-full py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs cursor-pointer">Close</button>
     </div>
   </div>
 
@@ -939,7 +1033,7 @@
           <i class="fa-solid fa-shield-halved"></i>
           <span>Live Selfie Verification</span>
         </div>
-        <button onclick="closeSelfieModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeSelfieModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <p class="text-xs text-slate-300 mb-3 leading-relaxed">
@@ -952,8 +1046,8 @@
       </div>
 
       <div class="flex gap-2">
-        <button onclick="closeSelfieModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs">Cancel</button>
-        <button onclick="captureLiveSelfie()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold text-xs shadow-md">Snap & Verify</button>
+        <button onclick="closeSelfieModal()" class="flex-1 py-2.5 rounded-xl bg-datingdark-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+        <button onclick="captureLiveSelfie()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold text-xs shadow-md cursor-pointer">Snap & Verify</button>
       </div>
     </div>
   </div>
@@ -997,7 +1091,7 @@
           <i class="fa-solid fa-shield-heart"></i>
           <span>100% Real Human Dating Guidelines</span>
         </div>
-        <button onclick="closeSafetyModal()" class="text-slate-400 hover:text-white">
+        <button onclick="closeSafetyModal()" class="text-slate-400 hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -1005,9 +1099,9 @@
         <p><strong>1. Zero Bots Guarantee:</strong> Walang automated AI bots. Bawat kausap ay totoong tao.</p>
         <p><strong>2. Heart to Keep in Inbox:</strong> Gusto mo ang date mo? Pindutin ang Heart button para ma-save ang convo sa iyong Inbox!</p>
         <p><strong>3. Pass / Dislike:</strong> Kung hindi mo vibe, pindutin ang Thumbs Down / Pass button para mag-move on agad sa susunod na single.</p>
-        <p><strong>4. Privacy & Date Spots:</strong> Gamitin ang View-Once photos, Swap IG handles nang patas, at suriin ang ligtas na date spots!</p>
+        <p><strong>4. Cute Sparks:</strong> Palaguin ang inyong Love Plant, mag-bato bato pick, at magpadala ng Pinoy merienda treats!</p>
       </div>
-      <button onclick="closeSafetyModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink font-bold text-xs sm:text-sm text-white transition shadow-glow-heart">
+      <button onclick="closeSafetyModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink font-bold text-xs sm:text-sm text-white transition shadow-glow-heart cursor-pointer">
         Naiintindihan ko (Got it!)
       </button>
     </div>
@@ -1037,6 +1131,8 @@
       deleteDoc, 
       onSnapshot, 
       collection, 
+      query,
+      orderBy,
       runTransaction 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -1063,11 +1159,14 @@
       targetGender: 'Everyone',
       location: 'Metro Manila (BGC / Makati / QC)',
       tags: ['Late Night Usap', 'Coffee Date'],
+      myMascot: '🐱',
+      myZodiac: 'Scorpio ♏',
       soundEnabled: true,
       volume: 0.5,
       loversMusicPlaying: false,
       currentPartner: null,
       unsubs: [],
+      groupUnsubs: [],
       isSearching: false,
       chatConnected: false,
       isPairing: false,
@@ -1075,18 +1174,14 @@
       pendingImageBase64: null,
       groupPendingImageBase64: null,
       msgCount: 0,
-      // View-Once state
       isViewOncePending: false,
-      // Verification state
       isSelfieVerified: localStorage.getItem('esmeringle_verified') === 'true',
       selfieStream: null,
-      // Voice recording state
       mediaRecorder: null,
       audioChunks: [],
       isRecordingVoice: false,
       recordStartTime: 0,
       recordTimerInterval: null,
-      // WebRTC State
       peerConnection: null,
       localStream: null,
       remoteStream: null,
@@ -1188,6 +1283,8 @@
             gender: (sData.user1 === window.esmeringle.userId ? sData.user2Gender : sData.user1Gender) || sessionMeta.partner?.gender || 'Pinoy',
             intent: (sData.user1 === window.esmeringle.userId ? sData.user2Intent : sData.user1Intent) || sessionMeta.partner?.intent || 'Dating',
             location: (sData.user1 === window.esmeringle.userId ? sData.user2Location : sData.user1Location) || sessionMeta.partner?.location || 'PH',
+            mascot: (sData.user1 === window.esmeringle.userId ? sData.user2Mascot : sData.user1Mascot) || '🐱',
+            zodiac: (sData.user1 === window.esmeringle.userId ? sData.user2Zodiac : sData.user1Zodiac) || 'Scorpio ♏',
             verified: (sData.user1 === window.esmeringle.userId ? sData.user2Verified : sData.user1Verified) || false
           };
 
@@ -1214,15 +1311,7 @@
     async function registerUserPresence() {
       if (!db || !window.esmeringle.userId) return;
       try {
-        const presenceRef = doc(
-          db, 
-          'artifacts', 
-          window.esmeringle.appId, 
-          'public', 
-          'data', 
-          'presence', 
-          window.esmeringle.userId
-        );
+        const presenceRef = doc(db, 'artifacts', window.esmeringle.appId, 'public', 'data', 'presence', window.esmeringle.userId);
         await setDoc(presenceRef, {
           userId: window.esmeringle.userId,
           name: window.esmeringle.myNickname || 'Real Single',
@@ -1248,15 +1337,7 @@
     async function unregisterUserPresence() {
       if (!db || !window.esmeringle.userId) return;
       try {
-        const presenceRef = doc(
-          db, 
-          'artifacts', 
-          window.esmeringle.appId, 
-          'public', 
-          'data', 
-          'presence', 
-          window.esmeringle.userId
-        );
+        const presenceRef = doc(db, 'artifacts', window.esmeringle.appId, 'public', 'data', 'presence', window.esmeringle.userId);
         await deleteDoc(presenceRef);
       } catch(e) {}
     }
@@ -1264,14 +1345,7 @@
     function listenToLiveCounters() {
       if (!db) return;
       try {
-        const col = collection(
-          db, 
-          'artifacts', 
-          window.esmeringle.appId, 
-          'public', 
-          'data', 
-          'presence'
-        );
+        const col = collection(db, 'artifacts', window.esmeringle.appId, 'public', 'data', 'presence');
         onSnapshot(col, (snapshot) => {
           const now = Date.now();
           const activeSet = new Set();
@@ -1297,9 +1371,9 @@
     }
 
     async function startReactiveMatchmaking() {
-      const { db, appId, userId, myNickname, myGender, targetGender, intent, location, tags, isSelfieVerified } = window.esmeringle;
+      const { db, appId, userId, myNickname, myGender, targetGender, intent, location, tags, isSelfieVerified, myMascot, myZodiac } = window.esmeringle;
       if (!db || !userId) {
-        if (typeof showToast === 'function') showToast('Connecting to network, please retry in a moment...');
+        showToast('Connecting to network, please retry in a moment...');
         return;
       }
 
@@ -1316,6 +1390,8 @@
         intent: intent,
         location: location,
         tags: tags || [],
+        mascot: myMascot || '🐱',
+        zodiac: myZodiac || 'Scorpio ♏',
         isHuman: true,
         isVerified: isSelfieVerified || false,
         status: 'waiting',
@@ -1373,12 +1449,16 @@
                   user1Gender: targetCandidate.gender || 'Pinoy',
                   user1Intent: targetCandidate.intent || 'Casual',
                   user1Location: targetCandidate.location || 'PH',
+                  user1Mascot: targetCandidate.mascot || '🐱',
+                  user1Zodiac: targetCandidate.zodiac || 'Scorpio ♏',
                   user1Verified: targetCandidate.isVerified || false,
                   user2: userId,
                   user2Name: myNickname,
                   user2Gender: myGender,
                   user2Intent: intent,
                   user2Location: location,
+                  user2Mascot: myMascot || '🐱',
+                  user2Zodiac: myZodiac || 'Scorpio ♏',
                   user2Verified: isSelfieVerified || false,
                   isHumanVerified: true,
                   createdAt: Date.now(),
@@ -1404,17 +1484,17 @@
             });
 
             if (pairSucceeded) {
-              if (typeof cleanChatSubscriptions === 'function') cleanChatSubscriptions();
-              if (typeof joinChatSession === 'function') {
-                joinChatSession(sessionId, {
-                  userId: targetCandidate.userId,
-                  name: targetCandidate.nickname,
-                  gender: targetCandidate.gender,
-                  intent: targetCandidate.intent,
-                  location: targetCandidate.location,
-                  verified: targetCandidate.isVerified || false
-                });
-              }
+              cleanChatSubscriptions();
+              joinChatSession(sessionId, {
+                userId: targetCandidate.userId,
+                name: targetCandidate.nickname,
+                gender: targetCandidate.gender,
+                intent: targetCandidate.intent,
+                location: targetCandidate.location,
+                mascot: targetCandidate.mascot || '🐱',
+                zodiac: targetCandidate.zodiac || 'Scorpio ♏',
+                verified: targetCandidate.isVerified || false
+              });
               try { await deleteDoc(myTicketRef); } catch(e){}
             } else {
               window.esmeringle.isPairing = false;
@@ -1430,7 +1510,7 @@
       const unsubMyTicket = onSnapshot(myTicketRef, async (ticketSnap) => {
         const data = ticketSnap.data();
         if (data && data.status === 'matched' && data.sessionId) {
-          if (typeof cleanChatSubscriptions === 'function') cleanChatSubscriptions();
+          cleanChatSubscriptions();
           try {
             const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', data.sessionId);
             const sessionSnap = await getDoc(sessionRef);
@@ -1442,12 +1522,12 @@
               gender: (sData.user1 === userId ? sData.user2Gender : sData.user1Gender) || 'Pinoy',
               intent: (sData.user1 === userId ? sData.user2Intent : sData.user1Intent) || 'Dating',
               location: (sData.user1 === userId ? sData.user2Location : sData.user1Location) || 'PH',
+              mascot: (sData.user1 === userId ? sData.user2Mascot : sData.user1Mascot) || '🐱',
+              zodiac: (sData.user1 === userId ? sData.user2Zodiac : sData.user1Zodiac) || 'Scorpio ♏',
               verified: (sData.user1 === userId ? sData.user2Verified : sData.user1Verified) || false
             };
 
-            if (typeof joinChatSession === 'function') {
-              joinChatSession(data.sessionId, partnerInfo);
-            }
+            joinChatSession(data.sessionId, partnerInfo);
           } catch(e) {
             console.error("Error reading matched session:", e);
           }
@@ -1492,7 +1572,6 @@
       }
     }
 
-    // ================= WEBRTC AUDIO & VIDEO CALLING ENGINE =================
     async function setupLocalMedia(video = true, audio = true) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -1501,9 +1580,7 @@
         });
         window.esmeringle.localStream = stream;
         const localVideo = document.getElementById('localVideo');
-        if (localVideo) {
-          localVideo.srcObject = stream;
-        }
+        if (localVideo) localVideo.srcObject = stream;
 
         const voicePlaceholder = document.getElementById('voiceOnlyPlaceholder');
         const localContainer = document.getElementById('localVideoContainer');
@@ -1875,6 +1952,31 @@
 
   <!-- ================= MAIN CONTROLLER JAVASCRIPT ================= -->
   <script>
+    let toastTimeout = null;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const msg = document.getElementById('toastMsg');
+      if (!toast || !msg) return;
+      msg.innerText = message;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function triggerHapticFeedback(pattern = [30]) {
       if (navigator.vibrate) {
         try { navigator.vibrate(pattern); } catch(e){}
@@ -2078,6 +2180,14 @@
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
           osc.start(now);
           osc.stop(now + 0.2);
+        } else if (type === 'treat') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now);
+          osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
+          gain.gain.setValueAtTime(0.14 * volMultiplier, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
         } else if (type === 'disconnect') {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(440, now);
@@ -2108,6 +2218,16 @@
       btnElem.classList.remove('border-datingdark-border', 'bg-datingdark-900/60');
     }
 
+    function selectMascot(mascotEmoji, btnElem) {
+      window.esmeringle.myMascot = mascotEmoji;
+      playBeep('click');
+      document.querySelectorAll('.mascot-opt').forEach(btn => {
+        btn.classList.remove('active-dating-pill');
+      });
+      btnElem.classList.add('active-dating-pill');
+      showToast(`Selected ${mascotEmoji} Mascot!`);
+    }
+
     function renderTags() {
       const list = document.getElementById('tagsList');
       if (!list) return;
@@ -2117,7 +2237,7 @@
         badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rosebrand-500/15 text-rosebrand-300 border border-rosebrand-500/30';
         badge.innerHTML = `
           <span>#${escapeHtml(tag)}</span>
-          <button type="button" onclick="removeTag(${idx})" class="text-rosebrand-400 hover:text-white hover:bg-rosebrand-500/30 rounded-full w-4 h-4 flex items-center justify-center transition">
+          <button type="button" onclick="removeTag(${idx})" class="text-rosebrand-400 hover:text-white hover:bg-rosebrand-500/30 rounded-full w-4 h-4 flex items-center justify-center transition cursor-pointer">
             &times;
           </button>
         `;
@@ -2171,13 +2291,70 @@
       const startLabel = document.getElementById('startBtnLabel');
 
       if (mode === '1on1') {
-        btn1.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active-dating-pill transition duration-200';
-        btnGroup.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200';
+        btn1.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active-dating-pill transition duration-200 cursor-pointer';
+        btnGroup.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200 cursor-pointer';
         startLabel.innerText = 'Find A Live Human Match';
       } else {
-        btnGroup.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active-dating-pill transition duration-200';
-        btn1.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200';
+        btnGroup.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active-dating-pill transition duration-200 cursor-pointer';
+        btn1.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2 hover:text-white transition duration-200 cursor-pointer';
         startLabel.innerText = 'Enter Singles Lounge 🥂';
+      }
+    }
+
+    function openSafetyModal() {
+      playBeep('click');
+      const m = document.getElementById('safetyModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeSafetyModal() {
+      const m = document.getElementById('safetyModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function openConfirmExitModal() {
+      playBeep('click');
+      const m = document.getElementById('confirmExitModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function confirmExitNo() {
+      const m = document.getElementById('confirmExitModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function confirmExitYes() {
+      confirmExitNo();
+      switchToSetup();
+    }
+
+    async function removeQueueTicket() {
+      const { db, appId, queueDocId } = window.esmeringle;
+      if (db && queueDocId) {
+        try {
+          const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'matchmaking_queue', queueDocId));
+        } catch(e){}
+        window.esmeringle.queueDocId = null;
+      }
+    }
+
+    function cleanChatSubscriptions() {
+      if (window.esmeringle.unsubs && window.esmeringle.unsubs.length) {
+        window.esmeringle.unsubs.forEach(u => {
+          try { if (typeof u === 'function') u(); } catch(e){}
+        });
+        window.esmeringle.unsubs = [];
+      }
+      if (window.esmeringle.groupUnsubs && window.esmeringle.groupUnsubs.length) {
+        window.esmeringle.groupUnsubs.forEach(u => {
+          try { if (typeof u === 'function') u(); } catch(e){}
+        });
+        window.esmeringle.groupUnsubs = [];
       }
     }
 
@@ -2192,20 +2369,376 @@
 
       document.getElementById('setupView').classList.remove('hidden');
       document.getElementById('radarView').classList.add('hidden');
+      document.getElementById('radarView').classList.remove('flex');
       document.getElementById('chat1on1View').classList.add('hidden');
       document.getElementById('groupChatView').classList.add('hidden');
 
       renderRecentMatchBox();
     }
 
-    /* PERSISTENT RECENT MATCH (NEVER EXPIRES) */
+    function cancelMatching() {
+      playBeep('click');
+      showToast('Search cancelled.');
+      switchToSetup();
+    }
+
+    function startSearchOrJoin() {
+      initAudio();
+      const nickInput = document.getElementById('nicknameInput');
+      const nickname = nickInput.value.trim();
+      const error = validateNickname(nickname);
+      if (error) {
+        showToast(error);
+        nickInput.focus();
+        return;
+      }
+
+      window.esmeringle.myNickname = nickname;
+      localStorage.setItem('esmeringle_nickname', nickname);
+      playBeep('click');
+
+      if (window.esmeringle.mode === 'group') {
+        enterGroupLounge();
+      } else {
+        document.getElementById('setupView').classList.add('hidden');
+        document.getElementById('radarView').classList.remove('hidden');
+        document.getElementById('radarView').classList.add('flex');
+        window.esmeringleStartReactiveMatchmaking();
+      }
+    }
+
+    async function joinChatSession(sessionId, partner) {
+      window.esmeringle.sessionId = sessionId;
+      window.esmeringle.currentPartner = partner;
+      window.esmeringle.chatConnected = true;
+      window.esmeringle.isSearching = false;
+      window.esmeringle.isPairing = false;
+      window.esmeringle.msgCount = 0;
+
+      saveRecentMatch(partner, sessionId);
+
+      document.getElementById('setupView').classList.add('hidden');
+      document.getElementById('radarView').classList.add('hidden');
+      document.getElementById('radarView').classList.remove('flex');
+      document.getElementById('chat1on1View').classList.remove('hidden');
+
+      document.getElementById('strangerNameLabel').innerText = partner.name || 'Your Date';
+      document.getElementById('strangerAvatar').innerText = (partner.name || 'D').charAt(0).toUpperCase();
+      document.getElementById('partnerMascotTag').innerText = partner.mascot || '🐱';
+
+      const partnerTagPill = document.getElementById('strangerTagPill');
+      if (partnerTagPill) {
+        partnerTagPill.innerText = partner.gender || 'Pinoy';
+      }
+
+      updateVerificationBadgeUI();
+      updateChemistryMeter(0);
+      playBeep('match');
+
+      const { db, appId, userId } = window.esmeringle;
+      if (!db) return;
+
+      const { collection, onSnapshot, query, orderBy, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+      
+      const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
+      const q = query(msgsCol, orderBy('createdAt', 'asc'));
+
+      const unsubMsgs = onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = '';
+        let count = 0;
+
+        snapshot.forEach((docSnap) => {
+          count++;
+          const msg = docSnap.data();
+          const isMe = msg.senderId === userId;
+          renderMessageItem(container, docSnap.id, msg, isMe, false);
+        });
+
+        window.esmeringle.msgCount = count;
+        updateChemistryMeter(count);
+        container.scrollTop = container.scrollHeight;
+      });
+      window.esmeringle.unsubs.push(unsubMsgs);
+
+      const sessionDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+      const unsubSession = onSnapshot(sessionDocRef, (snap) => {
+        const data = snap.data();
+        if (!data) return;
+
+        if (data.status === 'ended') {
+          const leftNotice = document.getElementById('strangerLeftNotice');
+          if (leftNotice) leftNotice.classList.remove('hidden');
+        }
+
+        const typingBox = document.getElementById('typingIndicator');
+        if (data.typing && data.typing !== userId) {
+          typingBox.classList.remove('hidden');
+          typingBox.classList.add('flex');
+        } else {
+          typingBox.classList.add('hidden');
+          typingBox.classList.remove('flex');
+        }
+
+        if (data.handles) {
+          checkHandlesSync(data.handles);
+        }
+      });
+      window.esmeringle.unsubs.push(unsubSession);
+
+      window.listenForIncomingCalls(sessionId);
+    }
+
+    function renderMessageItem(container, msgId, msg, isMe, isGroup = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} msg-anim group msg-group w-full`;
+
+      let contentHtml = '';
+      if (msg.image) {
+        if (msg.isViewOnce && !isMe) {
+          const containerId = 'vo_' + msgId;
+          contentHtml = `
+            <div id="${containerId}" class="relative max-w-xs rounded-2xl overflow-hidden border border-rosebrand-500/30 cursor-pointer" onclick="revealViewOnceImage('${msgId}', '${containerId}')">
+              <img src="${msg.image}" class="w-48 h-48 object-cover blur-xl brightness-50 transition" alt="View Once">
+              <div class="view-once-overlay absolute inset-0 flex flex-col items-center justify-center text-center p-2 bg-black/40">
+                <i class="fa-solid fa-eye text-2xl text-rosebrand-400 mb-1"></i>
+                <span class="text-[11px] font-bold text-white">Tap to view once 👁️</span>
+              </div>
+            </div>
+          `;
+        } else {
+          contentHtml = `<img src="${msg.image}" class="max-w-[220px] rounded-2xl border border-rosebrand-500/20 shadow-md" alt="chat photo">`;
+        }
+      } else if (msg.audioUrl) {
+        contentHtml = `
+          <div class="flex items-center gap-2 p-2 bg-datingdark-900 rounded-2xl border border-rosebrand-500/30">
+            <audio controls src="${msg.audioUrl}" class="h-8 max-w-[200px]"></audio>
+          </div>
+        `;
+      } else {
+        contentHtml = `<div class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-medium ${isMe ? 'bg-gradient-to-r from-rosebrand-600 to-heart-pink text-white rounded-tr-none shadow-glow-heart' : 'bg-datingdark-850 text-slate-100 rounded-tl-none border border-datingdark-border'}">${escapeHtml(msg.text)}</div>`;
+      }
+
+      msgDiv.innerHTML = `
+        ${!isMe && isGroup ? `<span class="text-[10px] text-rosebrand-300 font-semibold mb-0.5 ml-1">${escapeHtml(msg.senderName)}</span>` : ''}
+        ${contentHtml}
+        <div class="text-[9px] text-slate-500 mt-1 px-1 flex items-center gap-1.5">
+          <span>${new Date(msg.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+      `;
+
+      container.appendChild(msgDiv);
+    }
+
+    async function handleSend1on1(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      const image = window.esmeringle.pendingImageBase64;
+      const isViewOnce = window.esmeringle.isViewOncePending;
+
+      if (!text && !image) return;
+
+      const { db, appId, sessionId, userId, myNickname } = window.esmeringle;
+      if (!db || !sessionId) return;
+
+      playBeep('sent');
+      input.value = '';
+      cancelImageUpload();
+
+      try {
+        const { collection, addDoc, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
+        
+        await addDoc(msgsCol, {
+          senderId: userId,
+          senderName: myNickname,
+          text: text,
+          image: image || null,
+          isViewOnce: isViewOnce || false,
+          reactions: {},
+          createdAt: Date.now()
+        });
+
+        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+        updateDoc(sessionRef, { typing: null, status: 'active' });
+      } catch (err) {
+        console.error("Message send error:", err);
+      }
+    }
+
+    let typingTimeout = null;
+    async function handleTypingPing() {
+      const { db, appId, sessionId, userId } = window.esmeringle;
+      if (!db || !sessionId) return;
+      try {
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
+        updateDoc(sessionRef, { typing: userId });
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          updateDoc(sessionRef, { typing: null });
+        }, 2500);
+      } catch(e){}
+    }
+
+    function sendHeartEmojiQuick() {
+      document.getElementById('chatInput').value = '💖';
+      handleSend1on1();
+    }
+
+    function sendHeartSpark(e) {
+      playBeep('spark');
+      triggerHapticFeedback([40]);
+      const container = document.getElementById('floatingHeartsContainer');
+      if (container) {
+        for (let i = 0; i < 5; i++) {
+          const heart = document.createElement('div');
+          heart.className = 'floating-sparkle text-rosebrand-400 text-2xl';
+          heart.innerHTML = '✨💖';
+          heart.style.left = `${Math.random() * 80 + 10}%`;
+          heart.style.top = `${Math.random() * 50 + 20}%`;
+          container.appendChild(heart);
+          setTimeout(() => heart.remove(), 1400);
+        }
+      }
+    }
+
+    function sendIcebreaker(text) {
+      document.getElementById('chatInput').value = text;
+      handleSend1on1();
+    }
+
+    function toggleMemePicker() {
+      playBeep('click');
+      document.getElementById('memePickerTray').classList.toggle('hidden');
+    }
+
+    function sendMemeReaction(imgUrl, caption) {
+      toggleMemePicker();
+      window.esmeringle.pendingImageBase64 = imgUrl;
+      document.getElementById('chatInput').value = `[${caption}]`;
+      handleSend1on1();
+    }
+
+    function handleDeviceImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        window.esmeringle.pendingImageBase64 = event.target.result;
+        document.getElementById('imagePreviewImg').src = event.target.result;
+        document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        document.getElementById('imagePreviewContainer').classList.add('flex');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function cancelImageUpload() {
+      window.esmeringle.pendingImageBase64 = null;
+      window.esmeringle.isViewOncePending = false;
+      const c = document.getElementById('imagePreviewContainer');
+      if (c) {
+        c.classList.add('hidden');
+        c.classList.remove('flex');
+      }
+      const inp = document.getElementById('deviceImageInput');
+      if (inp) inp.value = '';
+    }
+
+    function nextPartnerPrompt() {
+      hangUpCall(true);
+      cleanChatSubscriptions();
+      switchToSetup();
+      startSearchOrJoin();
+    }
+
+    async function enterGroupLounge() {
+      document.getElementById('setupView').classList.add('hidden');
+      document.getElementById('groupChatView').classList.remove('hidden');
+
+      const { db, appId, userId } = window.esmeringle;
+      if (!db) return;
+
+      const { collection, onSnapshot, query, orderBy } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+      const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
+      const q = query(loungeCol, orderBy('createdAt', 'asc'));
+
+      const unsubGroup = onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('groupMessages');
+        container.innerHTML = '';
+        snapshot.forEach(docSnap => {
+          const msg = docSnap.data();
+          const isMe = msg.senderId === userId;
+          renderMessageItem(container, docSnap.id, msg, isMe, true);
+        });
+        container.scrollTop = container.scrollHeight;
+      });
+      window.esmeringle.groupUnsubs.push(unsubGroup);
+    }
+
+    function leaveGroupLounge() {
+      cleanChatSubscriptions();
+      switchToSetup();
+    }
+
+    async function handleSendGroup(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('groupInput');
+      const text = input.value.trim();
+      const image = window.esmeringle.groupPendingImageBase64;
+      if (!text && !image) return;
+
+      const { db, appId, userId, myNickname } = window.esmeringle;
+      if (!db) return;
+
+      playBeep('sent');
+      input.value = '';
+      cancelGroupImageUpload();
+
+      try {
+        const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
+        await addDoc(loungeCol, {
+          senderId: userId,
+          senderName: myNickname,
+          text: text,
+          image: image || null,
+          reactions: {},
+          createdAt: Date.now()
+        });
+      } catch(err) {
+        console.error("Group send error:", err);
+      }
+    }
+
+    function handleGroupDeviceImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        window.esmeringle.groupPendingImageBase64 = event.target.result;
+        document.getElementById('groupImagePreviewImg').src = event.target.result;
+        document.getElementById('groupImagePreviewContainer').classList.remove('hidden');
+        document.getElementById('groupImagePreviewContainer').classList.add('flex');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function cancelGroupImageUpload() {
+      window.esmeringle.groupPendingImageBase64 = null;
+      const c = document.getElementById('groupImagePreviewContainer');
+      if (c) {
+        c.classList.add('hidden');
+        c.classList.remove('flex');
+      }
+      const inp = document.getElementById('groupDeviceImageInput');
+      if (inp) inp.value = '';
+    }
+
     function saveRecentMatch(partner, sessionId) {
       if (!partner || !sessionId) return;
-      const recent = {
-        partner: partner,
-        sessionId: sessionId,
-        savedAt: Date.now()
-      };
+      const recent = { partner: partner, sessionId: sessionId, savedAt: Date.now() };
       localStorage.setItem('esmeringle_recent_match', JSON.stringify(recent));
       localStorage.setItem('esmeringle_active_session', JSON.stringify(recent));
       renderRecentMatchBox();
@@ -2274,7 +2807,6 @@
       joinChatSession(recent.sessionId, recent.partner);
     }
 
-    /* INBOX STORAGE SYSTEM */
     function getStoredInbox() {
       try {
         const raw = localStorage.getItem('esmeringle_inbox_matches');
@@ -2289,11 +2821,7 @@
       const inbox = getStoredInbox();
       const existingIdx = inbox.findIndex(i => i.sessionId === sessionId || (i.partner && i.partner.userId === partner.userId));
 
-      const entry = {
-        partner: partner,
-        sessionId: sessionId,
-        savedAt: Date.now()
-      };
+      const entry = { partner: partner, sessionId: sessionId, savedAt: Date.now() };
 
       if (existingIdx !== -1) {
         inbox[existingIdx] = entry;
@@ -2317,7 +2845,6 @@
       }
     }
 
-    /* HEART BUTTON ACTION: WANT MATCH -> TRANSFER TO INBOX */
     function keepAndTransferToInbox() {
       const { currentPartner, sessionId } = window.esmeringle;
       if (!currentPartner || !sessionId) {
@@ -2347,7 +2874,6 @@
       openInboxModal();
     }
 
-    /* DISLIKE / PASS BUTTON ACTION: DON'T LIKE MATCH -> NEXT DATE */
     function dislikeMatchPrompt() {
       playBeep('click');
       triggerHapticFeedback([50]);
@@ -2356,7 +2882,6 @@
       nextPartnerPrompt();
     }
 
-    /* OPEN & RENDER INBOX MODAL */
     function openInboxModal() {
       playBeep('click');
       const modal = document.getElementById('inboxModal');
@@ -2393,10 +2918,10 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="openInboxChat('${item.sessionId}')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink text-white text-xs font-bold shadow-md transition">
+              <button onclick="openInboxChat('${item.sessionId}')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 to-heart-pink hover:from-rosebrand-500 hover:to-heart-pink text-white text-xs font-bold shadow-md transition cursor-pointer">
                 Chat
               </button>
-              <button onclick="removeInboxItem(${index})" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs" title="Remove from Inbox">
+              <button onclick="removeInboxItem(${index})" class="w-7 h-7 rounded-lg bg-datingdark-800 text-slate-400 hover:text-white flex items-center justify-center text-xs cursor-pointer" title="Remove from Inbox">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </div>
@@ -2446,7 +2971,6 @@
       joinChatSession(match.sessionId, match.partner);
     }
 
-    /* PUSH-TO-TALK / VOICE NOTES ENGINE */
     async function toggleVoiceRecording() {
       if (window.esmeringle.isRecordingVoice) {
         stopAndSendVoiceNote();
@@ -2482,8 +3006,7 @@
           const reader = new FileReader();
           reader.readAsDataURL(audioBlob);
           reader.onloadend = () => {
-            const base64Audio = reader.result;
-            sendVoiceMessage(base64Audio);
+            sendVoiceMessage(reader.result);
           };
         };
 
@@ -2563,7 +3086,6 @@
       }
     }
 
-    /* VIEW-ONCE PHOTO FEATURE */
     function toggleViewOnceState() {
       window.esmeringle.isViewOncePending = !window.esmeringle.isViewOncePending;
       const btn = document.getElementById('viewOnceToggleBtn');
@@ -2608,7 +3130,6 @@
       }, 1000);
     }
 
-    /* MINI-GAME / DEEP TALK CATEGORIZED DECKS */
     const GAME_DECKS = {
       thisorthat: [
         '☕ Coffee Date vs 🚗 Late Night Drive?',
@@ -2635,9 +3156,9 @@
         const tab = document.getElementById(`tab-${k}`);
         if (tab) {
           if (k === categoryKey) {
-            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-pointer';
           } else {
-            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white';
+            tab.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-400 hover:text-white cursor-pointer';
           }
         }
       });
@@ -2649,7 +3170,7 @@
 
       list.forEach(prompt => {
         const btn = document.createElement('button');
-        btn.className = 'p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-left text-slate-200 transition text-[11px] leading-tight';
+        btn.className = 'p-2 rounded-xl bg-datingdark-850 border border-datingdark-border hover:border-rosebrand-500 text-left text-slate-200 transition text-[11px] leading-tight cursor-pointer';
         btn.innerText = prompt;
         btn.onclick = () => sendGamePrompt(prompt);
         container.appendChild(btn);
@@ -2671,7 +3192,58 @@
       handleSend1on1();
     }
 
-    /* CURATED DATE SPOT SUGGESTER */
+    function toggleRpsTray() {
+      const tray = document.getElementById('rpsTray');
+      tray.classList.toggle('hidden');
+      playBeep('click');
+    }
+
+    function playRpsMove(move) {
+      toggleRpsTray();
+      document.getElementById('chatInput').value = `✌️ Bato-Bato-Pick: Bumato ako ng [${move}]! Ikaw naman!`;
+      handleSend1on1();
+      triggerHapticFeedback([40, 40]);
+    }
+
+    function toggleVirtualTreatTray() {
+      const tray = document.getElementById('virtualTreatTray');
+      tray.classList.toggle('hidden');
+      playBeep('click');
+    }
+
+    function sendVirtualTreat(treatName, icon) {
+      toggleVirtualTreatTray();
+      playBeep('treat');
+      triggerHapticFeedback([30, 60, 90]);
+
+      const container = document.getElementById('floatingHeartsContainer');
+      if (container) {
+        const treatEl = document.createElement('div');
+        treatEl.className = 'absolute bottom-16 left-1/2 -translate-x-1/2 text-5xl z-30 pointer-events-none animate-treat-bounce';
+        treatEl.innerText = icon;
+        container.appendChild(treatEl);
+        setTimeout(() => treatEl.remove(), 1800);
+      }
+
+      document.getElementById('chatInput').value = `Merienda Delivery! ${icon} Nilibre kita ng ${treatName}!`;
+      handleSend1on1();
+    }
+
+    function showZodiacHoroscopeCard() {
+      const partnerZodiac = window.esmeringle.currentPartner?.zodiac || 'Scorpio ♏';
+      const myZodiac = window.esmeringle.myZodiac || 'Scorpio ♏';
+      const matches = [
+        "92% Match — Puro overthinking sa gabi pero loyal kapag nagmahal! ✨",
+        "88% Match — Parehong matigas ang ulo, pero sweet at nagpapakumbaba pag nagkausap! 💕",
+        "96% Match — Low maintenance friendship pero deep talks hanggang 3 AM! 🌙"
+      ];
+      const randomText = matches[Math.floor(Math.random() * matches.length)];
+
+      document.getElementById('chatInput').value = `🔮 Horoscope Spark (${myZodiac} + ${partnerZodiac}): ${randomText}`;
+      handleSend1on1();
+      triggerHapticFeedback([40]);
+    }
+
     const DATE_SPOTS_DATA = {
       'Metro Manila (BGC / Makati / QC)': [
         { name: 'Starbucks Reserve - BGC High Street', tag: 'Coffee & Stroll', vibe: 'Cozy, Public & Safe' },
@@ -2704,7 +3276,7 @@
             <div class="text-xs font-bold text-white">${escapeHtml(sp.name)}</div>
             <div class="text-[10px] text-amber-300 font-semibold">${escapeHtml(sp.tag)} • <span class="text-slate-400 font-normal">${escapeHtml(sp.vibe)}</span></div>
           </div>
-          <button onclick="shareSpotToChat('${sp.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-bold">
+          <button onclick="shareSpotToChat('${sp.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-bold cursor-pointer">
             Invite ☕
           </button>
         `;
@@ -2726,7 +3298,6 @@
       handleSend1on1();
     }
 
-    /* MUTUAL SOCIAL HANDLE REVEAL */
     function openHandleSwapModal() {
       playBeep('click');
       document.getElementById('handleSwapModal').classList.remove('hidden');
@@ -2782,7 +3353,6 @@
       }
     }
 
-    /* LIVE SELFIE VERIFICATION */
     async function openSelfieVerificationModal() {
       playBeep('click');
       const modal = document.getElementById('selfieModal');
@@ -2843,14 +3413,29 @@
       }
     }
 
-    /* PROGRESSIVE CHEMISTRY METER UPDATE */
     function updateChemistryMeter(count) {
       const bar = document.getElementById('chemistryProgressBar');
       const status = document.getElementById('chemistryStatusText');
+      const plantIcon = document.getElementById('lovePlantIcon');
+      const plantStage = document.getElementById('lovePlantStage');
       if (!bar || !status) return;
 
       let pct = Math.min(100, Math.max(15, count * 7));
       bar.style.width = `${pct}%`;
+
+      if (count < 5) {
+        if (plantIcon) plantIcon.innerText = '🌱';
+        if (plantStage) plantStage.innerText = 'Sprout';
+      } else if (count < 12) {
+        if (plantIcon) plantIcon.innerText = '🌿';
+        if (plantStage) plantStage.innerText = 'Growing';
+      } else if (count < 20) {
+        if (plantIcon) plantIcon.innerText = '🌸';
+        if (plantStage) plantStage.innerText = 'Blossom';
+      } else {
+        if (plantIcon) plantIcon.innerText = '🌻';
+        if (plantStage) plantStage.innerText = 'Sunflower 💖';
+      }
 
       if (pct < 35) {
         status.innerText = "Getting to Know (Level 1)";
@@ -2859,734 +3444,6 @@
       } else {
         status.innerText = "Deep Spark (Soulmates) 💖🔥";
       }
-    }
-
-    function startSearchOrJoin() {
-      initAudio();
-      playBeep('click');
-
-      const nickInput = document.getElementById('nicknameInput');
-      const customNick = nickInput.value.trim();
-
-      const validationError = validateNickname(customNick);
-      if (validationError) {
-        showToast(validationError);
-        nickInput.focus();
-        nickInput.classList.add('border-rosebrand-500', 'ring-1', 'ring-rosebrand-500');
-        return;
-      }
-      nickInput.classList.remove('border-rosebrand-500', 'ring-1', 'ring-rosebrand-500');
-
-      window.esmeringle.myNickname = customNick;
-      localStorage.setItem('esmeringle_nickname', customNick);
-      window.esmeringle.location = document.getElementById('locationSelect').value;
-
-      if (window.esmeringleRegisterPresence) {
-        window.esmeringleRegisterPresence();
-      }
-
-      if (window.esmeringle.mode === 'group') {
-        enterGroupLounge();
-      } else {
-        startLive1on1Queue();
-      }
-    }
-
-    function cleanChatSubscriptions() {
-      if (window.esmeringle.unsubs && window.esmeringle.unsubs.length) {
-        window.esmeringle.unsubs.forEach(unsub => {
-          try { if (typeof unsub === 'function') unsub(); } catch (e) {}
-        });
-        window.esmeringle.unsubs = [];
-      }
-    }
-
-    function startLive1on1Queue() {
-      cleanChatSubscriptions();
-      document.getElementById('setupView').classList.add('hidden');
-      document.getElementById('chat1on1View').classList.add('hidden');
-      document.getElementById('radarView').classList.remove('hidden');
-      document.getElementById('radarView').classList.add('flex');
-      document.getElementById('strangerLeftNotice').classList.add('hidden');
-
-      document.getElementById('radarStatusText').innerText = `Human Radar: Finding real active Pinoy...`;
-      document.getElementById('radarSubtext').innerText = `Intent: ${window.esmeringle.intent} • ${window.esmeringle.location}`;
-
-      if (window.esmeringleStartReactiveMatchmaking) {
-        window.esmeringleStartReactiveMatchmaking();
-      }
-    }
-
-    async function removeQueueTicket() {
-      const { db, appId, queueDocId } = window.esmeringle;
-      if (db && queueDocId) {
-        try {
-          const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-          const myTicketRef = doc(db, 'artifacts', appId, 'public', 'data', 'matchmaking_queue', queueDocId);
-          await deleteDoc(myTicketRef);
-        } catch(e) {}
-        window.esmeringle.queueDocId = null;
-      }
-    }
-
-    function cancelMatching() {
-      removeQueueTicket();
-      cleanChatSubscriptions();
-      window.esmeringle.isSearching = false;
-      window.esmeringle.isPairing = false;
-      switchToSetup();
-      showToast('Search cancelled');
-    }
-
-    function compressImageFile(file, maxWidth = 800, quality = 0.7) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            let width = img.width;
-            let height = img.height;
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', quality);
-            resolve(dataUrl);
-          };
-          img.onerror = (err) => reject(err);
-        };
-        reader.onerror = (err) => reject(err);
-      });
-    }
-
-    async function handleDeviceImageSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        showToast('Please select a valid image file');
-        return;
-      }
-
-      try {
-        showToast('Processing photo...');
-        const compressedBase64 = await compressImageFile(file);
-        window.esmeringle.pendingImageBase64 = compressedBase64;
-
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const previewImg = document.getElementById('imagePreviewImg');
-        previewImg.src = compressedBase64;
-        previewContainer.classList.remove('hidden');
-        previewContainer.classList.add('flex');
-        playBeep('spark');
-      } catch (err) {
-        console.error("Image compression error:", err);
-        showToast('Failed to load image');
-      }
-    }
-
-    function cancelImageUpload() {
-      window.esmeringle.pendingImageBase64 = null;
-      window.esmeringle.isViewOncePending = false;
-      const previewContainer = document.getElementById('imagePreviewContainer');
-      previewContainer.classList.add('hidden');
-      previewContainer.classList.remove('flex');
-      document.getElementById('deviceImageInput').value = '';
-    }
-
-    async function handleGroupDeviceImageSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        showToast('Please select a valid image file');
-        return;
-      }
-
-      try {
-        showToast('Processing photo...');
-        const compressedBase64 = await compressImageFile(file);
-        window.esmeringle.groupPendingImageBase64 = compressedBase64;
-
-        const previewContainer = document.getElementById('groupImagePreviewContainer');
-        const previewImg = document.getElementById('groupImagePreviewImg');
-        previewImg.src = compressedBase64;
-        previewContainer.classList.remove('hidden');
-        previewContainer.classList.add('flex');
-        playBeep('spark');
-      } catch (err) {
-        console.error("Group image compression error:", err);
-        showToast('Failed to load image');
-      }
-    }
-
-    function cancelGroupImageUpload() {
-      window.esmeringle.groupPendingImageBase64 = null;
-      const previewContainer = document.getElementById('groupImagePreviewContainer');
-      previewContainer.classList.add('hidden');
-      previewContainer.classList.remove('flex');
-      document.getElementById('groupDeviceImageInput').value = '';
-    }
-
-    async function joinChatSession(sessionId, partner) {
-      cleanChatSubscriptions();
-
-      window.esmeringle.isSearching = false;
-      window.esmeringle.isPairing = false;
-      window.esmeringle.chatConnected = true;
-      window.esmeringle.sessionId = sessionId;
-      window.esmeringle.currentPartner = partner;
-      window.esmeringle.msgCount = 0;
-
-      saveRecentMatch(partner, sessionId);
-      playBeep('match');
-      triggerHapticFeedback([50, 50, 100]);
-
-      document.getElementById('radarView').classList.add('hidden');
-      document.getElementById('radarView').classList.remove('flex');
-      document.getElementById('setupView').classList.add('hidden');
-      document.getElementById('chat1on1View').classList.remove('hidden');
-      document.getElementById('strangerLeftNotice').classList.add('hidden');
-
-      const name = partner.name || 'Your Match';
-      document.getElementById('strangerNameLabel').innerText = name;
-      document.getElementById('strangerTagPill').innerHTML = `<i class="fa-solid fa-user-check text-[10px]"></i> 100% Real Human • ${partner.gender || 'Pinoy'}`;
-      document.getElementById('strangerAvatar').innerText = name.charAt(0).toUpperCase();
-
-      updateVerificationBadgeUI();
-
-      const msgBox = document.getElementById('chatMessages');
-      msgBox.innerHTML = `
-        <div class="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-800/40 text-center text-xs text-emerald-200">
-          <i class="fa-solid fa-shield-heart mr-1 text-emerald-400"></i>
-          Connected with <strong>${escapeHtml(name)}</strong> from ${escapeHtml(partner.location || 'PH')}! 100% Human verified.
-        </div>
-      `;
-
-      const { db, appId, userId } = window.esmeringle;
-      if (!db) return;
-
-      const { doc, collection, onSnapshot, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-      const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-
-      try {
-        await updateDoc(sessionRef, { status: 'active' });
-      } catch(e){}
-
-      const unsubSession = onSnapshot(sessionRef, (snap) => {
-        const data = snap.data();
-        if (!data) return;
-
-        if (data.status === 'disconnected') {
-          handlePartnerDisconnected();
-        } else if (data.status === 'active') {
-          document.getElementById('strangerPresenceDot').className = 'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-datingdark-900 rounded-full';
-          document.getElementById('strangerStatusText').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Live 1-on-1 Blind Date`;
-          document.getElementById('strangerLeftNotice').classList.add('hidden');
-        }
-
-        if (data.handles) {
-          checkHandlesSync(data.handles);
-        }
-
-        const typingBox = document.getElementById('typingIndicator');
-        if (data.typing && data.typing !== userId) {
-          document.getElementById('typingName').innerText = `${escapeHtml(partner.name)} is typing...`;
-          typingBox.classList.remove('hidden');
-        } else {
-          typingBox.classList.add('hidden');
-        }
-      }, (err) => console.warn("Session watch error:", err));
-      window.esmeringle.unsubs.push(unsubSession);
-
-      const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
-
-      const unsubMsgs = onSnapshot(msgsCol, (snapshot) => {
-        const msgs = [];
-        snapshot.forEach(docSnap => {
-          msgs.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-        window.esmeringle.msgCount = msgs.length;
-        updateChemistryMeter(msgs.length);
-
-        msgs.forEach(msg => {
-          const isMe = msg.senderId === userId;
-          renderOrUpdate1on1Message(msg, isMe);
-        });
-      }, (err) => console.warn("Messages stream error:", err));
-      window.esmeringle.unsubs.push(unsubMsgs);
-
-      if (window.listenForIncomingCalls) {
-        window.listenForIncomingCalls(sessionId);
-      }
-    }
-
-    function handlePartnerDisconnected() {
-      hangUpCall(false);
-      document.getElementById('strangerPresenceDot').className = 'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-amber-500 border-2 border-datingdark-900 rounded-full';
-      document.getElementById('strangerStatusText').innerHTML = `<span class="text-amber-400 font-semibold"><i class="fa-solid fa-plug-circle-exclamation mr-1"></i>Temporarily Away</span>`;
-      document.getElementById('strangerLeftNotice').classList.remove('hidden');
-      document.getElementById('typingIndicator').classList.add('hidden');
-      playBeep('disconnect');
-    }
-
-    let typingTimeout = null;
-    async function handleTypingPing() {
-      const { db, appId, sessionId, userId, chatConnected } = window.esmeringle;
-      if (!db || !sessionId || !chatConnected) return;
-
-      try {
-        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-        await updateDoc(sessionRef, { typing: userId });
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(async () => {
-          try {
-            await updateDoc(sessionRef, { typing: null });
-          } catch(e){}
-        }, 1500);
-      } catch(e){}
-    }
-
-    async function handleSend1on1(e) {
-      if (e) e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      const imagePayload = window.esmeringle.pendingImageBase64;
-      const isViewOnce = window.esmeringle.isViewOncePending;
-
-      if (!text && !imagePayload) return;
-      if (!window.esmeringle.chatConnected) return;
-
-      const { db, appId, sessionId, userId, myNickname } = window.esmeringle;
-      input.value = '';
-      cancelImageUpload();
-      playBeep('sent');
-      triggerHapticFeedback([15]);
-
-      try {
-        const { collection, addDoc, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-        const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
-        await addDoc(msgsCol, {
-          senderId: userId,
-          senderName: myNickname,
-          text: text,
-          imageUrl: imagePayload || null,
-          audioUrl: null,
-          viewOnce: isViewOnce,
-          reactions: {},
-          createdAt: Date.now()
-        });
-
-        const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-        updateDoc(sessionRef, { typing: null, status: 'active' });
-      } catch (err) {
-        console.error("Error sending 1on1 message:", err);
-      }
-    }
-
-    function sendHeartEmojiQuick() {
-      if (!window.esmeringle.chatConnected) return;
-      document.getElementById('chatInput').value = '❤️';
-      handleSend1on1();
-      playBeep('spark');
-    }
-
-    function sendHeartSpark(e) {
-      playBeep('spark');
-      triggerHapticFeedback([30]);
-      const container = document.getElementById('floatingHeartsContainer');
-      const heart = document.createElement('div');
-      heart.className = 'floating-sparkle text-rosebrand-400 text-2xl';
-      heart.innerHTML = '❤️';
-      const rect = e.currentTarget.getBoundingClientRect();
-      heart.style.left = `${rect.left + 5}px`;
-      heart.style.top = `${rect.top}px`;
-      container.appendChild(heart);
-      setTimeout(() => heart.remove(), 1400);
-
-      if (window.esmeringle.chatConnected) {
-        document.getElementById('chatInput').value = 'Sending you a heart spark! ✨❤️';
-        handleSend1on1();
-      }
-    }
-
-    async function sendMemeReaction(imgUrl, caption) {
-      if (!window.esmeringle.chatConnected) return;
-      toggleMemePicker();
-      const { db, appId, sessionId, userId, myNickname } = window.esmeringle;
-      playBeep('sent');
-
-      try {
-        const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-        const msgsCol = collection(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId, 'messages');
-        await addDoc(msgsCol, {
-          senderId: userId,
-          senderName: myNickname,
-          text: caption,
-          imageUrl: imgUrl,
-          audioUrl: null,
-          reactions: {},
-          createdAt: Date.now()
-        });
-      } catch (err) {
-        console.error("Error sending meme:", err);
-      }
-    }
-
-    function sendIcebreaker(text) {
-      if (!window.esmeringle.chatConnected) return;
-      document.getElementById('chatInput').value = text;
-      handleSend1on1();
-    }
-
-    function toggleMemePicker() {
-      const tray = document.getElementById('memePickerTray');
-      tray.classList.toggle('hidden');
-      playBeep('click');
-    }
-
-    const REACT_EMOJIS = ['❤️', '🔥', '😂', '😍', '🥺', '👍'];
-
-    function buildReactionsPill(reactions = {}, msgId, sessionId, isGroup = false) {
-      const emojis = Object.keys(reactions).filter(e => reactions[e] && reactions[e].length > 0);
-      if (emojis.length === 0) return '';
-
-      const currentUserId = window.esmeringle.userId;
-      let html = `<div class="flex flex-wrap gap-1 mt-1.5">`;
-      emojis.forEach(emo => {
-        const users = reactions[emo] || [];
-        const didIReact = users.includes(currentUserId);
-        html += `
-          <button 
-            type="button" 
-            onclick="toggleReaction('${sessionId}', '${msgId}', '${emo}', ${isGroup})" 
-            class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border transition cursor-pointer ${
-              didIReact 
-                ? 'bg-rosebrand-500/25 border-rosebrand-400 text-rosebrand-300 font-bold shadow-sm' 
-                : 'bg-datingdark-900/80 border-datingdark-border text-slate-300 hover:border-slate-500'
-            }" 
-            title="${users.length} reaction(s)"
-          >
-            <span>${emo}</span>
-            <span>${users.length}</span>
-          </button>
-        `;
-      });
-      html += `</div>`;
-      return html;
-    }
-
-    function buildReactionPickerBar(msgId, sessionId, isGroup = false, isMe = false) {
-      let emojiBtns = '';
-      REACT_EMOJIS.forEach(emo => {
-        emojiBtns += `
-          <button 
-            type="button" 
-            onclick="toggleReaction('${sessionId}', '${msgId}', '${emo}', ${isGroup})" 
-            class="hover:scale-125 transition-transform duration-100 p-0.5 text-xs cursor-pointer"
-          >${emo}</button>
-        `;
-      });
-
-      return `
-        <div class="reaction-trigger absolute ${isMe ? '-top-3 right-2' : '-top-3 left-2'} z-10 hidden group-hover:flex items-center gap-1 px-2 py-0.5 rounded-full bg-datingdark-900 border border-datingdark-border shadow-md backdrop-blur-md">
-          ${emojiBtns}
-        </div>
-      `;
-    }
-
-    function renderOrUpdate1on1Message(msg, isMe) {
-      const container = document.getElementById('chatMessages');
-      const timeStr = new Date(msg.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const msgElemId = `msg-1on1-${msg.id}`;
-      let msgWrapper = document.getElementById(msgElemId);
-
-      const reactionsHtml = buildReactionsPill(msg.reactions || {}, msg.id, window.esmeringle.sessionId, false);
-      const pickerHtml = buildReactionPickerBar(msg.id, window.esmeringle.sessionId, false, isMe);
-
-      let contentHtml = '';
-      if (msg.audioUrl) {
-        contentHtml = `
-          <div class="flex items-center gap-2 py-1">
-            <audio controls src="${msg.audioUrl}" class="h-8 max-w-[210px]"></audio>
-            <span class="text-[10px] text-rosebrand-200"><i class="fa-solid fa-microphone mr-1"></i>Voice Memo</span>
-          </div>
-        `;
-      } else if (msg.imageUrl) {
-        if (msg.viewOnce) {
-          const viewOnceContainerId = `vo-wrap-${msg.id}`;
-          contentHtml = `
-            <div id="${viewOnceContainerId}" class="relative rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/50 cursor-pointer" onclick="revealViewOnceImage('${msg.id}', '${viewOnceContainerId}')">
-              <img src="${msg.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl blur-xl brightness-50 transition duration-300" alt="View Once Photo" />
-              <div class="view-once-overlay absolute inset-0 flex flex-col items-center justify-center gap-1 text-white bg-black/40">
-                <i class="fa-regular fa-eye text-lg text-rosebrand-400"></i>
-                <span class="text-[10px] font-bold">Tap to view photo (6s)</span>
-              </div>
-            </div>
-            ${msg.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(msg.text)}</p>` : ''}
-          `;
-        } else {
-          contentHtml = `
-            <div class="rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/40">
-              <img src="${msg.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl" alt="Uploaded photo" />
-            </div>
-            ${msg.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(msg.text)}</p>` : ''}
-          `;
-        }
-      } else {
-        contentHtml = `<p class="text-xs sm:text-sm break-words">${escapeHtml(msg.text)}</p>`;
-      }
-
-      if (!msgWrapper) {
-        msgWrapper = document.createElement('div');
-        msgWrapper.id = msgElemId;
-        msgWrapper.className = `group relative flex flex-col msg-anim ${isMe ? 'items-end self-end' : 'items-start self-start'} max-w-[85%]`;
-        
-        msgWrapper.innerHTML = `
-          <div class="flex items-center gap-1.5 mb-1 text-[10px] text-slate-400 px-1">
-            <span class="font-bold ${isMe ? 'text-rosebrand-400' : 'text-slate-300'}">${isMe ? 'You' : escapeHtml(msg.senderName || 'Match')}</span>
-            <span>•</span>
-            <span>${timeStr}</span>
-            ${isMe ? '<span class="text-rosebrand-400 font-bold ml-0.5">✓✓</span>' : ''}
-          </div>
-          <div class="relative px-3.5 py-2.5 rounded-2xl ${isMe ? 'bg-gradient-to-r from-rosebrand-600 to-heart-pink text-white rounded-tr-none shadow-glow-heart' : 'bg-datingdark-800 text-slate-200 border border-datingdark-border rounded-tl-none'}">
-            ${pickerHtml}
-            ${contentHtml}
-            <div class="reactions-box">${reactionsHtml}</div>
-          </div>
-        `;
-        container.appendChild(msgWrapper);
-        container.scrollTop = container.scrollHeight;
-      } else {
-        const reactionsBox = msgWrapper.querySelector('.reactions-box');
-        if (reactionsBox) reactionsBox.innerHTML = reactionsHtml;
-      }
-    }
-
-    async function nextPartnerPrompt() {
-      playBeep('click');
-      hangUpCall(true);
-      cleanChatSubscriptions();
-      window.esmeringle.sessionId = null;
-      window.esmeringle.chatConnected = false;
-      startLive1on1Queue();
-    }
-
-    function openConfirmExitModal() {
-      playBeep('click');
-      const modal = document.getElementById('confirmExitModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function confirmExitNo() {
-      playBeep('click');
-      const modal = document.getElementById('confirmExitModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    async function confirmExitYes() {
-      const modal = document.getElementById('confirmExitModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      await disconnectChat();
-    }
-
-    async function disconnectChat() {
-      playBeep('click');
-      hangUpCall(true);
-      
-      if (window.esmeringle.currentPartner && window.esmeringle.sessionId) {
-        saveRecentMatch(window.esmeringle.currentPartner, window.esmeringle.sessionId);
-        
-        const { db, appId, sessionId } = window.esmeringle;
-        if (db && sessionId) {
-          try {
-            const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-            const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'chat_sessions', sessionId);
-            await updateDoc(sessionRef, { status: 'disconnected' });
-          } catch(e){}
-        }
-      }
-
-      switchToSetup();
-      showToast('Chat paused. You can reconnect anytime!');
-    }
-
-    /* SINGLES LOUNGE ENTER / EXIT LOGIC WITH CLEAR CHAT */
-    async function enterGroupLounge() {
-      cleanChatSubscriptions();
-      document.getElementById('setupView').classList.add('hidden');
-      document.getElementById('groupChatView').classList.remove('hidden');
-
-      const groupMsgs = document.getElementById('groupMessages');
-      groupMsgs.innerHTML = `
-        <div class="p-3.5 rounded-2xl bg-datingdark-900/80 border border-datingdark-border text-center text-xs text-rose-200">
-          🥂 Welcome to the <strong>Esmeringle Singles Lounge</strong>! Say hi to real singles or find someone to blind date!
-        </div>
-      `;
-
-      playBeep('match');
-      showToast('Entered Singles Lounge');
-
-      const { db, appId, userId } = window.esmeringle;
-      if (!db) return;
-
-      const { collection, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-      const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
-
-      const unsubLounge = onSnapshot(loungeCol, (snapshot) => {
-        const msgs = [];
-        snapshot.forEach(docSnap => {
-          msgs.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-        const displayMsgs = msgs.slice(-60);
-
-        displayMsgs.forEach(item => {
-          const isMe = item.senderId === userId;
-          renderOrUpdateGroupMessage(item, isMe);
-        });
-      }, (err) => console.warn("Lounge stream notice:", err));
-
-      window.esmeringle.unsubs.push(unsubLounge);
-    }
-
-    function leaveGroupLounge() {
-      cleanChatSubscriptions();
-      
-      const groupMsgs = document.getElementById('groupMessages');
-      if (groupMsgs) {
-        groupMsgs.innerHTML = '';
-      }
-      cancelGroupImageUpload();
-
-      playBeep('click');
-      switchToSetup();
-      showToast('Left Singles Lounge. Chat history cleared.');
-    }
-
-    function renderOrUpdateGroupMessage(item, isMe) {
-      const container = document.getElementById('groupMessages');
-      const timeStr = new Date(item.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const msgElemId = `msg-group-${item.id}`;
-      let wrap = document.getElementById(msgElemId);
-
-      const reactionsHtml = buildReactionsPill(item.reactions || {}, item.id, 'lounge', true);
-      const pickerHtml = buildReactionPickerBar(item.id, 'lounge', true, isMe);
-
-      let contentHtml = '';
-      if (item.imageUrl) {
-        contentHtml = `
-          <div class="rounded-xl overflow-hidden mb-1 border border-datingdark-border bg-black/40">
-            <img src="${item.imageUrl}" class="max-w-[240px] max-h-56 object-contain rounded-xl" alt="Lounge broadcast photo" />
-          </div>
-          ${item.text ? `<p class="text-xs sm:text-sm font-medium break-words">${escapeHtml(item.text)}</p>` : ''}
-        `;
-      } else {
-        contentHtml = `<p class="text-xs sm:text-sm break-words">${escapeHtml(item.text)}</p>`;
-      }
-
-      if (!wrap) {
-        wrap = document.createElement('div');
-        wrap.id = msgElemId;
-        wrap.className = `group relative flex flex-col msg-anim ${isMe ? 'items-end self-end' : 'items-start self-start'} max-w-[85%]`;
-
-        wrap.innerHTML = `
-          <div class="flex items-center gap-1.5 mb-1 text-[10px] text-slate-400 px-1">
-            <span class="font-bold ${isMe ? 'text-rosebrand-400' : 'text-heart-pink'}">${escapeHtml(item.senderName || 'Single')}</span>
-            <span>•</span>
-            <span>${timeStr}</span>
-          </div>
-          <div class="relative px-3.5 py-2.5 rounded-2xl ${isMe ? 'bg-gradient-to-r from-rosebrand-600 via-heart-pink to-heart-violet text-white rounded-tr-none shadow-glow-heart' : 'bg-datingdark-800 text-slate-200 border border-datingdark-border rounded-tl-none'}">
-            ${pickerHtml}
-            ${contentHtml}
-            <div class="reactions-box">${reactionsHtml}</div>
-          </div>
-        `;
-
-        container.appendChild(wrap);
-        container.scrollTop = container.scrollHeight;
-      } else {
-        const reactionsBox = wrap.querySelector('.reactions-box');
-        if (reactionsBox) reactionsBox.innerHTML = reactionsHtml;
-      }
-    }
-
-    async function handleSendGroup(e) {
-      e.preventDefault();
-      const input = document.getElementById('groupInput');
-      const text = input.value.trim();
-      const imagePayload = window.esmeringle.groupPendingImageBase64;
-
-      if (!text && !imagePayload) return;
-
-      const { db, appId, userId, myNickname } = window.esmeringle;
-      if (!db || !userId) {
-        showToast('Connecting to network, please retry...');
-        return;
-      }
-
-      input.value = '';
-      cancelGroupImageUpload();
-      playBeep('sent');
-
-      try {
-        const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-        const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
-        await addDoc(loungeCol, {
-          senderId: userId,
-          senderName: myNickname,
-          text: text,
-          imageUrl: imagePayload || null,
-          reactions: {},
-          createdAt: Date.now()
-        });
-      } catch(err) {
-        console.error("Lounge send error:", err);
-      }
-    }
-
-    function openSafetyModal() {
-      document.getElementById('safetyModal').classList.remove('hidden');
-      document.getElementById('safetyModal').classList.add('flex');
-      playBeep('click');
-    }
-
-    function closeSafetyModal() {
-      document.getElementById('safetyModal').classList.add('hidden');
-      document.getElementById('safetyModal').classList.remove('flex');
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 2600);
-    }
-
-    function escapeHtml(string) {
-      if (!string) return '';
-      return String(string)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
     }
 
     Object.assign(window, {
@@ -3599,6 +3456,7 @@
       setMode,
       selectIntent,
       selectGender,
+      selectMascot,
       addCustomTopic,
       removeTag,
       startSearchOrJoin,
@@ -3608,7 +3466,6 @@
       openConfirmExitModal,
       confirmExitYes,
       confirmExitNo,
-      disconnectChat,
       sendIcebreaker,
       toggleMemePicker,
       sendMemeReaction,
@@ -3621,6 +3478,7 @@
       enterGroupLounge,
       leaveGroupLounge,
       showToast,
+      escapeHtml,
       handleDeviceImageSelect,
       cancelImageUpload,
       handleGroupDeviceImageSelect,
@@ -3648,7 +3506,12 @@
       submitSocialHandle,
       openSelfieVerificationModal,
       closeSelfieModal,
-      captureLiveSelfie
+      captureLiveSelfie,
+      toggleRpsTray,
+      playRpsMove,
+      toggleVirtualTreatTray,
+      sendVirtualTreat,
+      showZodiacHoroscopeCard
     });
 
     window.addEventListener('load', () => {
