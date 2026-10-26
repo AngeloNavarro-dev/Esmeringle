@@ -943,46 +943,41 @@
   </main>
 
   <!-- ================= GEMINI AI ASSISTANT WIDGET ================= -->
-<div id="geminiWidgetContainer" class="fixed bottom-5 right-5 z-50 flex flex-col items-end font-sans">
-  
-  <!-- Chat Window (Hidden by default) -->
-  <div id="geminiChatWindow" class="hidden w-80 sm:w-96 h-[420px] bg-[#0f0a18] border border-rose-500/40 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3">
-    
-    <!-- Header -->
-    <div class="px-4 py-3 bg-[#140e22] border-b border-rose-500/20 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-rose-500 flex items-center justify-center text-white text-xs shadow">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
+  <div id="geminiWidgetContainer" class="fixed bottom-5 right-5 z-50 flex flex-col items-end font-sans">
+    <!-- Chat Window (Hidden by default) -->
+    <div id="geminiChatWindow" class="hidden w-80 sm:w-96 h-[420px] bg-[#0f0a18] border border-rose-500/40 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3">
+      <!-- Header -->
+      <div class="px-4 py-3 bg-[#140e22] border-b border-rose-500/20 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-rose-500 flex items-center justify-center text-white text-xs shadow">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">Website AI Assistant</div>
+            <div class="text-[9px] text-cyan-300">Powered by Gemini 2.5 Flash</div>
+          </div>
         </div>
-        <div>
-          <div class="text-xs font-bold text-white">Website AI Assistant</div>
-          <div class="text-[9px] text-cyan-300">Powered by Gemini 2.5 Flash</div>
+        <button onclick="toggleGeminiChat()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <!-- Messages Area -->
+      <div id="geminiMessages" class="flex-1 p-3 overflow-y-auto flex flex-col gap-2.5 text-xs">
+        <div class="p-3 bg-[#140e22] rounded-2xl border border-rose-500/20 text-slate-200">
+          👋 Hi! How can I help you navigate or use this website today?
         </div>
       </div>
-      <button onclick="toggleGeminiChat()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+      <!-- Input Form -->
+      <form onsubmit="sendGeminiMessage(event)" class="p-2.5 bg-[#140e22] border-t border-rose-500/20 flex items-center gap-2">
+        <input id="geminiInput" type="text" placeholder="Ask Gemini anything..." class="flex-1 bg-[#09070f] border border-rose-500/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" autocomplete="off">
+        <button type="submit" class="w-8 h-8 rounded-xl bg-gradient-to-r from-rose-600 to-pink-500 text-white flex items-center justify-center cursor-pointer shadow">
+          <i class="fa-solid fa-paper-plane text-xs"></i>
+        </button>
+      </form>
     </div>
-
-    <!-- Messages Area -->
-    <div id="geminiMessages" class="flex-1 p-3 overflow-y-auto flex flex-col gap-2.5 text-xs">
-      <div class="p-3 bg-[#140e22] rounded-2xl border border-rose-500/20 text-slate-200">
-        👋 Hi! How can I help you navigate or use this website today?
-      </div>
-    </div>
-
-    <!-- Input Form -->
-    <form onsubmit="sendGeminiMessage(event)" class="p-2.5 bg-[#140e22] border-t border-rose-500/20 flex items-center gap-2">
-      <input id="geminiInput" type="text" placeholder="Ask Gemini anything..." class="flex-1 bg-[#09070f] border border-rose-500/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" autocomplete="off">
-      <button type="submit" class="w-8 h-8 rounded-xl bg-gradient-to-r from-rose-600 to-pink-500 text-white flex items-center justify-center cursor-pointer shadow">
-        <i class="fa-solid fa-paper-plane text-xs"></i>
-      </button>
-    </form>
+    <!-- Floating Toggle Button -->
+    <button onclick="toggleGeminiChat()" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-rose-600 to-pink-500 text-white flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition cursor-pointer" title="Ask Gemini AI Assistant">
+      <i class="fa-solid fa-robot animate-pulse"></i>
+    </button>
   </div>
-
-  <!-- Floating Toggle Button -->
-  <button onclick="toggleGeminiChat()" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-rose-600 to-pink-500 text-white flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition cursor-pointer" title="Ask Gemini AI Assistant">
-    <i class="fa-solid fa-robot animate-pulse"></i>
-  </button>
-</div>
 
   <!-- ================= INBOX / SAVED MATCHES MODAL ================= -->
   <div id="inboxModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -1148,39 +1143,8 @@
     <span id="toastMsg">Notification message</span>
   </div>
 
-  <!-- ================= FIREBASE CLOUD REAL-TIME ENGINE & WEBRTC ================= -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {  
-      getAuth, 
-      signInAnonymously, 
-      signInWithCustomToken 
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import {  
-      getFirestore, 
-      doc, 
-      getDoc, 
-      getDocs,
-      setDoc, 
-      addDoc, 
-      updateDoc, 
-      deleteDoc, 
-      onSnapshot, 
-      collection, 
-      query,
-      where,
-      orderBy, 
-      runTransaction 
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // ==========================================
-    // ADD GEMINI SDK & CONTROLLER HERE 👇
-    // ==========================================
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
-
-    // Initialize Gemini Client (Replace with your Google AI Studio API Key)
-    const geminiAi = new GoogleGenAI({ apiKey: "AQ.Ab8RN6Ljx5efHEUny2USMA0egYtE55Kp76sLklDHUR2KEtvCMw" });
-
+  <!-- ================= GEMINI AI REST API CONTROLLER ================= -->
+  <script>
     window.toggleGeminiChat = function() {
       const win = document.getElementById('geminiChatWindow');
       win.classList.toggle('hidden');
@@ -1212,22 +1176,34 @@
       container.scrollTop = container.scrollHeight;
 
       try {
-        // Call Gemini 2.5 Flash model
-        const response = await geminiAi.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: text,
-          config: {
-            systemInstruction: "You are a helpful and friendly AI assistant for Esmeringle PH, a Pinoy dating website. Help users navigate the site, provide dating advice, icebreakers, and safe date spot recommendations in the Philippines.",
-          },
+        // Replace with your actual Google AI Studio API key
+        const apiKey = "AQ.Ab8RN6JPady2qXg4bjliKtqlyJAQk8d7iiT9SoDqVSMk-hbVpQ"; 
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: text }] }],
+            systemInstruction: {
+              parts: [{ text: "You are a helpful and friendly AI assistant for Esmeringle PH, a Pinoy dating website. Help users navigate the site, provide dating advice, icebreakers, and safe date spot recommendations in the Philippines." }]
+            }
+          })
         });
 
+        const data = await response.json();
         document.getElementById(typingId).remove();
 
-        // Display Gemini's Response
-        const botMsg = document.createElement('div');
-        botMsg.className = 'p-2.5 bg-datingdark-850 rounded-xl border border-datingdark-border text-slate-200 mr-6';
-        botMsg.innerText = response.text;
-        container.appendChild(botMsg);
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          const replyText = data.candidates[0].content.parts[0].text;
+          const botMsg = document.createElement('div');
+          botMsg.className = 'p-2.5 bg-datingdark-850 rounded-xl border border-datingdark-border text-slate-200 mr-6';
+          botMsg.innerText = replyText;
+          container.appendChild(botMsg);
+        } else {
+          throw new Error('Invalid response structure');
+        }
+
         container.scrollTop = container.scrollHeight;
       } catch (err) {
         document.getElementById(typingId).remove();
@@ -1237,7 +1213,32 @@
         container.appendChild(errMsg);
       }
     }
-    // ==========================================
+  </script>
+
+  <!-- ================= FIREBASE CLOUD REAL-TIME ENGINE & WEBRTC ================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {  
+      getAuth, 
+      signInAnonymously, 
+      signInWithCustomToken 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {  
+      getFirestore, 
+      doc, 
+      getDoc, 
+      getDocs,
+      setDoc, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc, 
+      onSnapshot, 
+      collection, 
+      query,
+      where,
+      orderBy, 
+      runTransaction 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     let storedUserId = localStorage.getItem('esmeringle_uid');
     if (!storedUserId) {
