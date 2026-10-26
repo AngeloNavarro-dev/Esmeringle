@@ -943,6 +943,7 @@
   </main>
 
   <!-- ================= GEMINI AI ASSISTANT WIDGET ================= -->
+
   <div id="geminiWidgetContainer" class="fixed bottom-5 right-5 z-50 flex flex-col items-end font-sans">
     <!-- Chat Window (Hidden by default) -->
     <div id="geminiChatWindow" class="hidden w-80 sm:w-96 h-[420px] bg-[#0f0a18] border border-rose-500/40 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3">
@@ -1177,8 +1178,8 @@
 
       try {
         // Replace with your actual Google AI Studio API key
-        const apiKey = "AQ.Ab8RN6JPady2qXg4bjliKtqlyJAQk8d7iiT9SoDqVSMk-hbVpQ"; 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const apiKey = "AQ.Ab8RN6J0nHkXp63qefjc84Stvk8atcChciPqwIBOW-jZB89Gg"; 
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
           method: 'POST',
@@ -1192,24 +1193,29 @@
         });
 
         const data = await response.json();
-        document.getElementById(typingId).remove();
+        
+        // Null-safe cleanup for typing indicator
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
 
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
+        if (response.ok && data.candidates && data.candidates[0].content.parts[0].text) {
           const replyText = data.candidates[0].content.parts[0].text;
           const botMsg = document.createElement('div');
           botMsg.className = 'p-2.5 bg-datingdark-850 rounded-xl border border-datingdark-border text-slate-200 mr-6';
           botMsg.innerText = replyText;
           container.appendChild(botMsg);
         } else {
-          throw new Error('Invalid response structure');
+          throw new Error(data.error?.message || 'Invalid response structure');
         }
 
         container.scrollTop = container.scrollHeight;
       } catch (err) {
-        document.getElementById(typingId).remove();
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+        
         const errMsg = document.createElement('div');
         errMsg.className = 'p-2.5 bg-rose-950/50 rounded-xl text-rose-300 mr-6';
-        errMsg.innerText = 'Sorry, connection error. Please check your API key.';
+        errMsg.innerText = 'Sorry, connection error or invalid API key. Please check your Gemini API key.';
         container.appendChild(errMsg);
       }
     }
