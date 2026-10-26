@@ -137,7 +137,6 @@
       100% { opacity: 0; transform: translateY(-70px) scale(1.3); }
     }
 
-    /* Treat animation */
     @keyframes bounceTreat {
       0% { opacity: 0; transform: translateY(40px) scale(0.5); }
       50% { opacity: 1; transform: translateY(-20px) scale(1.2); }
@@ -627,21 +626,17 @@
           </div>
         </div>
 
-        <!-- Controls: HEART (Want Match), DISLIKE/PASS (Don't Like Match), Voice, Video, Exit -->
         <div class="flex items-center gap-1.5 sm:gap-2">
           
-          <!-- HEART BUTTON (You want your match -> Transfer to Inbox) -->
           <button onclick="keepAndTransferToInbox()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rosebrand-600 via-heart-pink to-rosebrand-500 hover:from-rosebrand-500 hover:to-heart-pink text-white font-extrabold text-xs flex items-center gap-1.5 shadow-glow-heart active:scale-95 transition cursor-pointer" title="Keep Match & Move Conversation to Inbox">
             <i class="fa-solid fa-heart"></i>
             <span class="hidden sm:inline">Keep Match</span>
           </button>
 
-          <!-- DISLIKE / PASS BUTTON (You don't like match -> Next date) -->
           <button onclick="dislikeMatchPrompt()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-slate-400 hover:text-amber-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Pass / Dislike Match (Find Next Date)">
             <i class="fa-solid fa-thumbs-down text-xs"></i>
           </button>
 
-          <!-- Swap Social Handles Button -->
           <button onclick="openHandleSwapModal()" class="w-9 h-9 rounded-xl bg-datingdark-800 hover:bg-datingdark-750 text-fuchsia-400 border border-datingdark-border flex items-center justify-center transition active:scale-90 cursor-pointer" title="Mutual IG/Telegram Reveal">
             <i class="fa-brands fa-instagram text-xs"></i>
           </button>
@@ -848,7 +843,6 @@
           <button type="button" onclick="toggleMemePicker()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-400 hover:text-rosebrand-400 flex items-center justify-center transition cursor-pointer" title="Send a reaction card">
             <i class="fa-regular fa-image"></i>
           </button>
-          <!-- Kilig Dice Game Button -->
           <button type="button" onclick="toggleKiligGameTray()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-amber-400 hover:text-amber-300 flex items-center justify-center transition cursor-pointer" title="Games & Deep Talk Prompts">
             <i class="fa-solid fa-dice"></i>
           </button>
@@ -856,7 +850,6 @@
             <i class="fa-solid fa-heart"></i>
           </button>
 
-          <!-- Voice Note Button -->
           <button type="button" id="voiceRecordBtn" onclick="toggleVoiceRecording()" class="w-10 h-10 rounded-xl bg-datingdark-800 border border-datingdark-border text-slate-300 hover:text-rosebrand-400 flex items-center justify-center transition active:scale-95 cursor-pointer" title="Send Voice Memo">
             <i id="voiceRecordIcon" class="fa-solid fa-microphone text-sm"></i>
           </button>
@@ -948,6 +941,48 @@
     </div>
 
   </main>
+
+  <!-- ================= GEMINI AI ASSISTANT WIDGET ================= -->
+<div id="geminiWidgetContainer" class="fixed bottom-5 right-5 z-50 flex flex-col items-end font-sans">
+  
+  <!-- Chat Window (Hidden by default) -->
+  <div id="geminiChatWindow" class="hidden w-80 sm:w-96 h-[420px] bg-[#0f0a18] border border-rose-500/40 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3">
+    
+    <!-- Header -->
+    <div class="px-4 py-3 bg-[#140e22] border-b border-rose-500/20 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-rose-500 flex items-center justify-center text-white text-xs shadow">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-white">Website AI Assistant</div>
+          <div class="text-[9px] text-cyan-300">Powered by Gemini 2.5 Flash</div>
+        </div>
+      </div>
+      <button onclick="toggleGeminiChat()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="geminiMessages" class="flex-1 p-3 overflow-y-auto flex flex-col gap-2.5 text-xs">
+      <div class="p-3 bg-[#140e22] rounded-2xl border border-rose-500/20 text-slate-200">
+        👋 Hi! How can I help you navigate or use this website today?
+      </div>
+    </div>
+
+    <!-- Input Form -->
+    <form onsubmit="sendGeminiMessage(event)" class="p-2.5 bg-[#140e22] border-t border-rose-500/20 flex items-center gap-2">
+      <input id="geminiInput" type="text" placeholder="Ask Gemini anything..." class="flex-1 bg-[#09070f] border border-rose-500/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" autocomplete="off">
+      <button type="submit" class="w-8 h-8 rounded-xl bg-gradient-to-r from-rose-600 to-pink-500 text-white flex items-center justify-center cursor-pointer shadow">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Floating Toggle Button -->
+  <button onclick="toggleGeminiChat()" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-rose-600 to-pink-500 text-white flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition cursor-pointer" title="Ask Gemini AI Assistant">
+    <i class="fa-solid fa-robot animate-pulse"></i>
+  </button>
+</div>
 
   <!-- ================= INBOX / SAVED MATCHES MODAL ================= -->
   <div id="inboxModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -1108,7 +1143,7 @@
   </div>
 
   <!-- Notification Toast Container -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-2xl bg-datingdark-850 border border-rosebrand-500/40 text-xs text-white shadow-glow-heart flex items-center gap-2">
+  <div id="toast" class="fixed bottom-5 right-20 z-50 hidden px-4 py-2.5 rounded-2xl bg-datingdark-850 border border-rosebrand-500/40 text-xs text-white shadow-glow-heart flex items-center gap-2">
     <i class="fa-solid fa-heart text-rosebrand-400"></i>
     <span id="toastMsg">Notification message</span>
   </div>
@@ -1116,12 +1151,12 @@
   <!-- ================= FIREBASE CLOUD REAL-TIME ENGINE & WEBRTC ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { 
+    import {  
       getAuth, 
       signInAnonymously, 
       signInWithCustomToken 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { 
+    import {  
       getFirestore, 
       doc, 
       getDoc, 
@@ -1137,6 +1172,72 @@
       orderBy, 
       runTransaction 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ==========================================
+    // ADD GEMINI SDK & CONTROLLER HERE 👇
+    // ==========================================
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+    // Initialize Gemini Client (Replace with your Google AI Studio API Key)
+    const geminiAi = new GoogleGenAI({ apiKey: "AQ.Ab8RN6Ljx5efHEUny2USMA0egYtE55Kp76sLklDHUR2KEtvCMw" });
+
+    window.toggleGeminiChat = function() {
+      const win = document.getElementById('geminiChatWindow');
+      win.classList.toggle('hidden');
+    }
+
+    window.sendGeminiMessage = async function(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('geminiInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('geminiMessages');
+      
+      // Display User Message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'p-2.5 bg-rosebrand-600/20 rounded-xl text-white ml-6 text-right';
+      userMsg.innerText = text;
+      container.appendChild(userMsg);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // Display Loading Placeholder
+      const typingId = 'typing_' + Date.now();
+      const typingMsg = document.createElement('div');
+      typingMsg.id = typingId;
+      typingMsg.className = 'p-2.5 bg-datingdark-850 rounded-xl text-slate-400 italic mr-6';
+      typingMsg.innerText = 'Gemini is thinking...';
+      container.appendChild(typingMsg);
+      container.scrollTop = container.scrollHeight;
+
+      try {
+        // Call Gemini 2.5 Flash model
+        const response = await geminiAi.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: text,
+          config: {
+            systemInstruction: "You are a helpful and friendly AI assistant for Esmeringle PH, a Pinoy dating website. Help users navigate the site, provide dating advice, icebreakers, and safe date spot recommendations in the Philippines.",
+          },
+        });
+
+        document.getElementById(typingId).remove();
+
+        // Display Gemini's Response
+        const botMsg = document.createElement('div');
+        botMsg.className = 'p-2.5 bg-datingdark-850 rounded-xl border border-datingdark-border text-slate-200 mr-6';
+        botMsg.innerText = response.text;
+        container.appendChild(botMsg);
+        container.scrollTop = container.scrollHeight;
+      } catch (err) {
+        document.getElementById(typingId).remove();
+        const errMsg = document.createElement('div');
+        errMsg.className = 'p-2.5 bg-rose-950/50 rounded-xl text-rose-300 mr-6';
+        errMsg.innerText = 'Sorry, connection error. Please check your API key.';
+        container.appendChild(errMsg);
+      }
+    }
+    // ==========================================
 
     let storedUserId = localStorage.getItem('esmeringle_uid');
     if (!storedUserId) {
@@ -2656,9 +2757,6 @@
       startSearchOrJoin();
     }
 
-    /* ==============================================================
-       SINGLES LOUNGE: EPHEMERAL ROOM (CLEAR ON JOIN & DO NOT STORE)
-       ============================================================== */
     async function purgeLoungeMessages() {
       const { db, appId } = window.esmeringle;
       if (!db) return;
@@ -2683,10 +2781,7 @@
       const container = document.getElementById('groupMessages');
       if (container) container.innerHTML = '';
 
-      // Set current join timestamp so past messages are never rendered
       window.esmeringle.loungeJoinedAt = Date.now();
-
-      // Clear previous messages on join & don't save conversations
       await purgeLoungeMessages();
 
       const { db, appId, userId } = window.esmeringle;
@@ -2695,7 +2790,6 @@
       const { collection, onSnapshot, query, where, orderBy } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
       const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
       
-      // Only listen to new live messages arriving after join time
       const q = query(
         loungeCol, 
         where('createdAt', '>=', window.esmeringle.loungeJoinedAt),
@@ -2720,9 +2814,7 @@
       const container = document.getElementById('groupMessages');
       if (container) container.innerHTML = '';
       
-      // Clear lounge conversation on departure
       await purgeLoungeMessages();
-      
       cleanChatSubscriptions();
       switchToSetup();
     }
@@ -2745,7 +2837,6 @@
         const { collection, addDoc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const loungeCol = collection(db, 'artifacts', appId, 'public', 'data', 'lounge_messages');
         
-        // Broadcast ephemeral message to live participants
         const newMsgRef = await addDoc(loungeCol, {
           senderId: userId,
           senderName: myNickname,
@@ -2755,7 +2846,6 @@
           createdAt: Date.now()
         });
 
-        // Auto-delete broadcast after 4 minutes so no permanent log is saved
         setTimeout(async () => {
           try {
             await deleteDoc(newMsgRef);
